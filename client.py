@@ -208,7 +208,7 @@ class LoginPage(tk.Frame):
         network_peer.send_login()
 
 class NetworkPeer(Base):
-    def __init__(self, serverhost='localhost', serverport=30000, server_info=('192.168.1.155', 40000)):
+    def __init__(self, serverhost='localhost', serverport=30000, server_info=('192.168.1.241', 40000)):
         super(NetworkPeer, self).__init__(serverhost, serverport)
 
         # init host and port of central server
@@ -285,7 +285,7 @@ class NetworkPeer(Base):
         display_noti('Login Noti', 'Login Successful.')
         app.geometry("1100x600")
         app.resizable(False, False)
-        app.show_frame(ChatPage)
+        # app.show_frame(ChatPage)
 
     def login_error(self, msgdata):
         """ Processing received message from server: Login failed on the server. """
@@ -381,20 +381,20 @@ class NetworkPeer(Base):
         app.chatroom_textCons.see(tk.END)
     ## ===========================================================##
 
-    def recv_message(self, msgdata):
-        """ Processing received chat message from peer."""
-        friend_name = msgdata['friend_name']
-        if friend_name in self.friendlist:
-            # insert messages to text box
-            message = friend_name + ": " + msgdata['message']
-            app.frames[ChatPage].frame_list[friend_name].message_area.config(
-                state=tk.NORMAL)
-            app.frames[ChatPage].frame_list[friend_name].message_area.insert(
-                tk.END, message+"\n\n")
-            app.frames[ChatPage].frame_list[friend_name].message_area.config(
-                state=tk.DISABLED)
-            app.frames[ChatPage].frame_list[friend_name].message_area.see(
-                tk.END)
+    # def recv_message(self, msgdata):
+    #     """ Processing received chat message from peer."""
+    #     friend_name = msgdata['friend_name']
+    #     if friend_name in self.friendlist:
+    #         # insert messages to text box
+    #         message = friend_name + ": " + msgdata['message']
+    #         app.frames[ChatPage].frame_list[friend_name].message_area.config(
+    #             state=tk.NORMAL)
+    #         app.frames[ChatPage].frame_list[friend_name].message_area.insert(
+    #             tk.END, message+"\n\n")
+    #         app.frames[ChatPage].frame_list[friend_name].message_area.config(
+    #             state=tk.DISABLED)
+    #         app.frames[ChatPage].frame_list[friend_name].message_area.see(
+    #             tk.END)
     ## ===========================================================##
 
     ## ==========implement protocol for file tranfering==========##
