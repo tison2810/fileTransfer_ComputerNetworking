@@ -22,6 +22,7 @@ class CentralServer(Base):
             'PEER_LOGIN': self.peer_login,
             'PEER_SEARCH': self.peer_search,
             'PEER_LOGOUT': self.peer_logout,
+            'FILE_REPO': self.peer_upload,
         }
         for msgtype, function in handlers.items():
             self.add_handler(msgtype, function)
@@ -113,6 +114,13 @@ class CentralServer(Base):
             del self.onlinelist[peer_name]
             # noti
             print(peer_name, " has been removed from central server's online user list!")
+    ## ===========================================================##
+
+    ## ================implement protocol for peer upload file=============##
+    def peer_upload(self, msgdata):
+        peer_name = msgdata['peername']
+        file_name = msgdata['filename']
+        add_new_file(peer_name, file_name)
     ## ===========================================================##
 
 if __name__ == '__main__':
