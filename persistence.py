@@ -89,6 +89,25 @@ def add_new_file(username, filename):
         if cnt:
             cnt.close() 
 
+def delete_file(username, filename):
+    try:
+        # Connect to DB
+        cnt = sqlite3.connect('user.db')
+        # insert new record
+        cursor = cnt.excute('''SELECT ID FROM client WHERE NAME = ?;''',(username,))
+        user_id = cursor.fetchone()
+        if user_id:
+            user_id = user_id[0]
+            cnt.excute('''DELETE FROM file (CLIENT_ID, NAME) VALUE (?, ?);''',(user_id, filename))
+            cnt.commit()
+    # Handle errors
+    except sqlite3.Error as error:
+        print('Error occured - ', error)
+    # Close DB Connection irrespective of success or failure
+    finally:
+        if cnt:
+            cnt.close() 
+
 def search_file_name(filename):
     try:
         # Connect to DB
