@@ -23,6 +23,7 @@ class CentralServer(Base):
             'PEER_SEARCH': self.peer_search,
             'PEER_LOGOUT': self.peer_logout,
             'FILE_REPO': self.peer_upload,
+            'DELETE_FILE': self.delete_file,
         }
         for msgtype, function in handlers.items():
             self.add_handler(msgtype, function)
@@ -123,6 +124,12 @@ class CentralServer(Base):
         add_new_file(peer_name, file_name)
     ## ===========================================================##
 
+
+    ##=================implement protocol for peer delete file=============##
+    def delete_file(self, msgdata):
+        peer_name = msgdata['peername']
+        file_name = msgdata['filename']
+        delete_file(peer_name, file_name)
 if __name__ == '__main__':
     server = CentralServer()
     server.input_recv()
