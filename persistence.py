@@ -108,6 +108,29 @@ def delete_file(username, filename):
         if cnt:
             cnt.close() 
 
+def get_user_file(username):
+    try:
+        # Connect to DB
+        cnt = sqlite3.connect('user.db')
+        # open a cursor
+        cursor = cnt.execute('''SELECT f.NAME 
+                                FROM client c 
+                                INNER JOIN file f ON c.ID = f.CLIENT_ID 
+                                WHERE c.NAME = ?;''', (username,))
+        file_list = []
+        for row in cursor:
+            file_list.append(row[0])
+
+        cursor.close()
+    # Handle errors
+    except sqlite3.Error as error:
+        print('Error occured - ', error)
+    # Close DB Connection irrespective of success or failure
+    finally:
+        if cnt:
+            cnt.close() 
+        return file_list
+    ''
 def search_file_name(filename):
     try:
         # Connect to DB
