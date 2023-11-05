@@ -40,6 +40,29 @@ def get_user_password(username):
             cnt.close() 
         return str(result[0])
 
+def get_user_file(username):
+    try:
+        # Connect to DB
+        cnt = sqlite3.connect('user.db')
+        # open a cursor
+        cursor = cnt.execute('''SELECT f.NAME 
+                                FROM client c 
+                                INNER JOIN file f ON c.ID = f.CLIENT_ID 
+                                WHERE c.NAME = ?;''', (username,))
+        file_list = []
+        for row in cursor:
+            file_list.append(row[0])
+
+        cursor.close()
+    # Handle errors
+    except sqlite3.Error as error:
+        print('Error occured - ', error)
+    # Close DB Connection irrespective of success or failure
+    finally:
+        if cnt:
+            cnt.close() 
+        return file_list
+
 def add_new_user(username, password):
     try:
         # Connect to DB 
@@ -98,7 +121,7 @@ def delete_file(username, filename):
         user_id = cursor.fetchone()
         if user_id:
             user_id = user_id[0]
-            cnt.excute('''DELETE FROM file (CLIENT_ID, NAME) VALUE (?, ?);''',(user_id, filename))
+            cnt.excute('''DELETE FROM file WHERE (CLIENT_ID, NAME) = (?, ?);''',(user_id, filename))
             cnt.commit()
     # Handle errors
     except sqlite3.Error as error:
