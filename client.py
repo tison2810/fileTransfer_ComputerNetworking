@@ -4,12 +4,15 @@ import socket
 import threading
 import time
 import random
+import sys
+import platform
 from Base import Base
  
 # GUI
 import tkinter as tk
 import tkinter.messagebox
 import tkinter.filedialog
+import tkinter.ttk as ttk
 from PIL import ImageTk 
 
 # aid
@@ -27,6 +30,41 @@ OFFSET = 10000
 def display_noti(title, content):
     tkinter.messagebox.showinfo(title, content)
 
+_bgcolor = '#d9d9d9'  # X11 color: 'gray85'
+_fgcolor = '#000000'  # X11 color: 'black'
+_compcolor = 'gray40' # X11 color: #666666
+_ana1color = '#c3c3c3' # Closest X11 color: 'gray76'
+_ana2color = 'beige' # X11 color: #f5f5dc
+_tabfg1 = 'black' 
+_tabfg2 = 'black' 
+_tabbg1 = 'grey75' 
+_tabbg2 = 'grey89' 
+_bgmode = 'light'
+
+_style_code_ran = 0
+def _style_code():
+    global _style_code_ran
+    if _style_code_ran:
+       return
+    style = ttk.Style()
+    if sys.platform == "win32":
+       style.theme_use('winnative')
+    style.configure('.',background=_bgcolor)
+    style.configure('.',foreground=_fgcolor)
+    style.configure('.',font='TkDefaultFont')
+    style.map('.',background =
+       [('selected', _compcolor), ('active',_ana2color)])
+    if _bgmode == 'dark':
+       style.map('.',foreground =
+         [('selected', 'white'), ('active','white')])
+    else:
+       style.map('.',foreground =
+         [('selected', 'black'), ('active','black')])
+    style.configure('Vertical.TScrollbar',  background=_bgcolor,
+        arrowcolor= _fgcolor)
+    style.configure('Horizontal.TScrollbar',  background=_bgcolor,
+        arrowcolor= _fgcolor)
+    _style_code_ran = 1
 
 class tkinterApp(tk.Tk):
     # __init__ function for class tkinterApp
@@ -47,7 +85,7 @@ class tkinterApp(tk.Tk):
 
         # iterating through a tuple consisting
         # of the different page layouts
-        for F in (StartPage, RegisterPage, LoginPage):
+        for F in (StartPage, RegisterPage, LoginPage, RepoPage):
             frame = F(container, self)
             # initializing frame of that object from
             # startpage, registerpage, loginpage, chatpage respectively with
@@ -207,8 +245,277 @@ class LoginPage(tk.Frame):
         self.password_entry.delete(0, tk.END)
         network_peer.send_login()
 
+class RepoPage(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent)
+        '''This class configures and populates the toplevel window.
+           top is the toplevel containing window.'''
+
+        self.combobox = tk.StringVar()
+
+        _style_code()
+        self.Scrolledlistbox1 = ScrolledListBox(self)
+        self.Scrolledlistbox1.place(relx=0.045, rely=0.12, relheight=0.685
+                , relwidth=0.307)
+        self.Scrolledlistbox1.configure(background="white")
+        self.Scrolledlistbox1.configure(cursor="xterm")
+        self.Scrolledlistbox1.configure(disabledforeground="#a3a3a3")
+        self.Scrolledlistbox1.configure(font="TkFixedFont")
+        self.Scrolledlistbox1.configure(foreground="black")
+        self.Scrolledlistbox1.configure(highlightbackground="#d9d9d9")
+        self.Scrolledlistbox1.configure(highlightcolor="#d9d9d9")
+        self.Scrolledlistbox1.configure(selectbackground="#c4c4c4")
+        self.Scrolledlistbox1.configure(selectforeground="black")
+        self.Repository = tk.Label(self)
+        self.Repository.place(relx=0.045, rely=0.08, height=30, width=81)
+        self.Repository.configure(anchor='w')
+        self.Repository.configure(background="#4daad7")
+        self.Repository.configure(compound='left')
+        self.Repository.configure(cursor="fleur")
+        self.Repository.configure(disabledforeground="#a3a3a3")
+        self.Repository.configure(foreground="#ffffff")
+        self.Repository.configure(text='''Repository''')
+        self.remove_from_repo = tk.Button(self)
+        self.remove_from_repo.place(relx=0.045, rely=0.811, height=41, width=164)
+        self.remove_from_repo.configure(activebackground="beige")
+        self.remove_from_repo.configure(activeforeground="black")
+        self.remove_from_repo.configure(background="#ff4242")
+        self.remove_from_repo.configure(compound='left')
+        self.remove_from_repo.configure(cursor="fleur")
+        self.remove_from_repo.configure(disabledforeground="#a3a3a3")
+        self.remove_from_repo.configure(foreground="#ffffff")
+        self.remove_from_repo.configure(highlightbackground="#d9d9d9")
+        self.remove_from_repo.configure(highlightcolor="black")
+        self.remove_from_repo.configure(pady="0")
+        self.remove_from_repo.configure(text='''Xóa khỏi repo''')
+        self.add_to_repo = tk.Button(self)
+        self.add_to_repo.place(relx=0.198, rely=0.811, height=41, width=174)
+        self.add_to_repo.configure(activebackground="beige")
+        self.add_to_repo.configure(activeforeground="black")
+        self.add_to_repo.configure(background="#ffffff")
+        self.add_to_repo.configure(compound='left')
+        self.add_to_repo.configure(cursor="fleur")
+        self.add_to_repo.configure(disabledforeground="#a3a3a3")
+        self.add_to_repo.configure(foreground="#000000")
+        self.add_to_repo.configure(highlightbackground="#d9d9d9")
+        self.add_to_repo.configure(highlightcolor="black")
+        self.add_to_repo.configure(pady="0")
+        self.add_to_repo.configure(text='''Thêm vào repo''')
+        self.send_file = tk.Button(self)
+        self.send_file.place(relx=0.045, rely=0.878, height=41, width=344)
+        self.send_file.configure(activebackground="beige")
+        self.send_file.configure(activeforeground="black")
+        self.send_file.configure(background="#1f34f5")
+        self.send_file.configure(compound='left')
+        self.send_file.configure(cursor="fleur")
+        self.send_file.configure(disabledforeground="#a3a3a3")
+        self.send_file.configure(foreground="#ffffff")
+        self.send_file.configure(highlightbackground="#d9d9d9")
+        self.send_file.configure(highlightcolor="black")
+        self.send_file.configure(pady="0")
+        self.send_file.configure(text='''Update cho server''')
+        self.file_find = tk.Entry(self)
+        self.file_find.place(relx=0.359, rely=0.12, height=31, relwidth=0.368)
+        self.file_find.configure(background="white")
+        self.file_find.configure(cursor="fleur")
+        self.file_find.configure(disabledforeground="#a3a3a3")
+        self.file_find.configure(font="TkFixedFont")
+        self.file_find.configure(foreground="#000000")
+        self.file_find.configure(insertbackground="black")
+        self.file_find_label = tk.Label(self)
+        self.file_find_label.place(relx=0.359, rely=0.086, height=23, width=151)
+        self.file_find_label.configure(anchor='w')
+        self.file_find_label.configure(background="#4daad7")
+        self.file_find_label.configure(compound='left')
+        self.file_find_label.configure(cursor="fleur")
+        self.file_find_label.configure(disabledforeground="#a3a3a3")
+        self.file_find_label.configure(foreground="#ffffff")
+        self.file_find_label.configure(text='''Nhập tên file cần kiếm''')
+        self.peer_list = ScrolledListBox(self)
+        self.peer_list.place(relx=0.359, rely=0.173, relheight=0.57
+                , relwidth=0.509)
+        self.peer_list.configure(background="white")
+        self.peer_list.configure(cursor="xterm")
+        self.peer_list.configure(disabledforeground="#a3a3a3")
+        self.peer_list.configure(font="TkFixedFont")
+        self.peer_list.configure(foreground="black")
+        self.peer_list.configure(highlightbackground="#d9d9d9")
+        self.peer_list.configure(highlightcolor="#d9d9d9")
+        self.peer_list.configure(selectbackground="#c4c4c4")
+        self.peer_list.configure(selectforeground="black")
+        self.send_connect_request = tk.Button(self)
+        self.send_connect_request.place(relx=0.359, rely=0.751, height=41
+                , width=566)
+        self.send_connect_request.configure(activebackground="beige")
+        self.send_connect_request.configure(activeforeground="black")
+        self.send_connect_request.configure(background="#ffffff")
+        self.send_connect_request.configure(compound='left')
+        self.send_connect_request.configure(disabledforeground="#a3a3a3")
+        self.send_connect_request.configure(foreground="#000000")
+        self.send_connect_request.configure(highlightbackground="#d9d9d9")
+        self.send_connect_request.configure(highlightcolor="black")
+        self.send_connect_request.configure(pady="0")
+        self.send_connect_request.configure(text='''Gửi yêu cầu kết nối''')
+        self.file_find_button = tk.Button(self)
+        self.file_find_button.place(relx=0.872, rely=0.12, height=31, width=74)
+        self.file_find_button.configure(activebackground="beige")
+        self.file_find_button.configure(activeforeground="black")
+        self.file_find_button.configure(background="#1f34f5")
+        self.file_find_button.configure(compound='left')
+        self.file_find_button.configure(cursor="fleur")
+        self.file_find_button.configure(disabledforeground="#a3a3a3")
+        self.file_find_button.configure(foreground="#ffffff")
+        self.file_find_button.configure(highlightbackground="#d9d9d9")
+        self.file_find_button.configure(highlightcolor="black")
+        self.file_find_button.configure(pady="0")
+        self.file_find_button.configure(text='''Tìm kiếm''')
+        self.filetype__find = ttk.Combobox(self)
+        self.filetype__find.place(relx=0.737, rely=0.12, relheight=0.041
+                , relwidth=0.13)
+        self.filetype__find.configure(textvariable=self.combobox)
+        self.filetype__find.configure(takefocus="")
+
+    def sendFile(self, friend_name):
+        file_path = tkinter.filedialog.askopenfilename(initialdir="/",
+                                                       title="Select a File",
+                                                       filetypes=(("All files", "*.*"),))
+        file_name = os.path.basename(file_path)
+        msg_box = tkinter.messagebox.askquestion('File Explorer', 'Are you sure to send {} to {}?'.format(file_name, friend_name),
+                                                 icon="question")
+        if msg_box == 'yes':
+            sf_t = threading.Thread(
+                target=network_peer.transfer_file, args=(self.friend_name, file_path))
+            sf_t.daemon = True
+            sf_t.start()
+            tkinter.messagebox.showinfo(
+                "File Transfer", '{} has been sent to {}!'.format(file_name, friend_name))
+
+    def chooseFile(self):
+        file_path = tkinter.filedialog.askopenfilename(initialdir="/",
+                                                       title="Select a File",
+                                                       filetypes=(("All files", "*.*"),))
+        file_name = os.path.basename(file_path)
+        msg_box = tkinter.messagebox.askquestion('File Explorer', 'Upload {} to local repository?'.format(file_name),
+                                                 icon="question")
+        if msg_box == 'yes':
+            Scrolledlistbox1.insert(0,file_name)
+            tkinter.messagebox.showinfo(
+                "Local Repository", '{} has been added to localrepo!'.format(file_name))
+
+# The following code is added to facilitate the Scrolled widgets you specified.
+class AutoScroll(object):
+    '''Configure the scrollbars for a widget.'''
+    def __init__(self, master):
+        #  Rozen. Added the try-except clauses so that this class
+        #  could be used for scrolled entry widget for which vertical
+        #  scrolling is not supported. 5/7/14.
+        try:
+            vsb = ttk.Scrollbar(master, orient='vertical', command=self.yview)
+        except:
+            pass
+        hsb = ttk.Scrollbar(master, orient='horizontal', command=self.xview)
+        try:
+            self.configure(yscrollcommand=self._autoscroll(vsb))
+        except:
+            pass
+        self.configure(xscrollcommand=self._autoscroll(hsb))
+        self.grid(column=0, row=0, sticky='nsew')
+        try:
+            vsb.grid(column=1, row=0, sticky='ns')
+        except:
+            pass
+        hsb.grid(column=0, row=1, sticky='ew')
+        master.grid_columnconfigure(0, weight=1)
+        master.grid_rowconfigure(0, weight=1)
+        # Copy geometry methods of master  (taken from ScrolledText.py)
+        methods = tk.Pack.__dict__.keys() | tk.Grid.__dict__.keys() \
+                  | tk.Place.__dict__.keys()
+        for meth in methods:
+            if meth[0] != '_' and meth not in ('config', 'configure'):
+                setattr(self, meth, getattr(master, meth))
+
+    @staticmethod
+    def _autoscroll(sbar):
+        '''Hide and show scrollbar as needed.'''
+        def wrapped(first, last):
+            first, last = float(first), float(last)
+            if first <= 0 and last >= 1:
+                sbar.grid_remove()
+            else:
+                sbar.grid()
+            sbar.set(first, last)
+        return wrapped
+
+    def __str__(self):
+        return str(self.master)
+
+def _create_container(func):
+    '''Creates a ttk Frame with a given master, and use this new frame to
+    place the scrollbars and the widget.'''
+    def wrapped(cls, master, **kw):
+        container = ttk.Frame(master)
+        container.bind('<Enter>', lambda e: _bound_to_mousewheel(e, container))
+        container.bind('<Leave>', lambda e: _unbound_to_mousewheel(e, container))
+        return func(cls, container, **kw)
+    return wrapped
+
+class ScrolledListBox(AutoScroll, tk.Listbox):
+    '''A standard Tkinter Listbox widget with scrollbars that will
+    automatically show/hide as needed.'''
+    @_create_container
+    def __init__(self, master, **kw):
+        tk.Listbox.__init__(self, master, **kw)
+        AutoScroll.__init__(self, master)
+    def size_(self):
+        sz = tk.Listbox.size(self)
+        return sz
+
+import platform
+def _bound_to_mousewheel(event, widget):
+    child = widget.winfo_children()[0]
+    if platform.system() == 'Windows' or platform.system() == 'Darwin':
+        child.bind_all('<MouseWheel>', lambda e: _on_mousewheel(e, child))
+        child.bind_all('<Shift-MouseWheel>', lambda e: _on_shiftmouse(e, child))
+    else:
+        child.bind_all('<Button-4>', lambda e: _on_mousewheel(e, child))
+        child.bind_all('<Button-5>', lambda e: _on_mousewheel(e, child))
+        child.bind_all('<Shift-Button-4>', lambda e: _on_shiftmouse(e, child))
+        child.bind_all('<Shift-Button-5>', lambda e: _on_shiftmouse(e, child))
+
+def _unbound_to_mousewheel(event, widget):
+    if platform.system() == 'Windows' or platform.system() == 'Darwin':
+        widget.unbind_all('<MouseWheel>')
+        widget.unbind_all('<Shift-MouseWheel>')
+    else:
+        widget.unbind_all('<Button-4>')
+        widget.unbind_all('<Button-5>')
+        widget.unbind_all('<Shift-Button-4>')
+        widget.unbind_all('<Shift-Button-5>')
+
+def _on_mousewheel(event, widget):
+    if platform.system() == 'Windows':
+        widget.yview_scroll(-1*int(event.delta/120),'units')
+    elif platform.system() == 'Darwin':
+        widget.yview_scroll(-1*int(event.delta),'units')
+    else:
+        if event.num == 4:
+            widget.yview_scroll(-1, 'units')
+        elif event.num == 5:
+            widget.yview_scroll(1, 'units')
+
+def _on_shiftmouse(event, widget):
+    if platform.system() == 'Windows':
+        widget.xview_scroll(-1*int(event.delta/120), 'units')
+    elif platform.system() == 'Darwin':
+        widget.xview_scroll(-1*int(event.delta), 'units')
+    else:
+        if event.num == 4:
+            widget.xview_scroll(-1, 'units')
+        elif event.num == 5:
+            widget.xview_scroll(1, 'units')
+
 class NetworkPeer(Base):
-    def __init__(self, serverhost='localhost', serverport=30000, server_info=('192.168.1.241', 40000)):
+    def __init__(self, serverhost='localhost', serverport=30000, server_info=('192.168.137.1', 40000)):
         super(NetworkPeer, self).__init__(serverhost, serverport)
 
         # init host and port of central server
@@ -285,7 +592,7 @@ class NetworkPeer(Base):
         display_noti('Login Noti', 'Login Successful.')
         app.geometry("1100x600")
         app.resizable(False, False)
-        # app.show_frame(ChatPage)
+        app.show_frame(RepoPage)
 
     def login_error(self, msgdata):
         """ Processing received message from server: Login failed on the server. """

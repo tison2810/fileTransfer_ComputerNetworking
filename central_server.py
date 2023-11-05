@@ -59,7 +59,7 @@ class CentralServer(Base):
         peer_password = msgdata['password']
         # login error if peer has not registered yet or password not match
         # otherwise add peer to online user list
-        if peer_name in self.peerlist:
+        if peer_name in self.peerList:
             # retrieve password
             peer_password_retrieved = get_user_password(peer_name)
             if str(peer_password) == peer_password_retrieved:
@@ -70,7 +70,7 @@ class CentralServer(Base):
                                  msgtype='LOGIN_SUCCESS', msgdata={})
 
                 # update ipaddress and port using by this peer
-                update_user_address_port(peer_name, peer_host, peer_port);
+                update_user_address_port(peer_name, peer_host, peer_port)
                 
                 # noti
                 print(peer_name, " has been added to central server's online user list!")
