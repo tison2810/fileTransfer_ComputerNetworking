@@ -102,7 +102,7 @@ def add_new_file(username, filename):
         user_id = cursor.fetchone()
         if user_id:
             user_id = user_id[0]
-            cnt.execute('''INSERT INTO file (CLIENT_ID, NAME) VALUE (?, ?);''',(user_id, filename))
+            cnt.execute('''INSERT INTO file (CLIENT_ID, NAME) VALUES (?, ?);''',(user_id, filename))
             cnt.commit()
     # Handle errors
     except sqlite3.Error as error:
