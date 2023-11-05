@@ -316,7 +316,7 @@ class RepoPage(tk.Frame):
         self.send_file.configure(highlightbackground="#d9d9d9")
         self.send_file.configure(highlightcolor="black")
         self.send_file.configure(pady="0")
-        self.send_file.configure(text='''Update cho server''',command=lambda: network_peer.updateToServer(self.Scrolledlistbox1.get(tk.ANCHOR)))
+        self.send_file.configure(text='''Update cho server''',command=lambda: self.updateListFile())
 
         self.file_find = tk.Entry(self)
         self.file_find.place(relx=0.359, rely=0.12, height=31, relwidth=0.368)
@@ -403,12 +403,18 @@ class RepoPage(tk.Frame):
         msg_box = tkinter.messagebox.askquestion('File Explorer', 'Upload {} to local repository?'.format(file_name),
                                                  icon="question")
         if msg_box == 'yes':
-            popup = simpledialog.askstring("Input","Nhập tên file trên Localrepo",parent = self)
-            file_name = popup + "(" + file_name + ")"
+            # popup = simpledialog.askstring("Input","Nhập tên file trên Localrepo",parent = self)
             self.Scrolledlistbox1.insert(0,file_name)
             tkinter.messagebox.showinfo(
                 "Local Repository", '{} has been added to localrepo!'.format(file_name))
     
+    def updateListFile(self):
+        file_name = simpledialog.askstring("Input","Nhập tên file lưu trên Server",parent = self)
+        file_path = self.Scrolledlistbox1.get(tk.ANCHOR)
+        network_peer.updateToServer(file_name, file_path)
+        self.Scrolledlistbox1.delete(tk.ANCHOR)
+        self.Scrolledlistbox1.insert(0,file_name + "(" + file_path +")")
+
     def deleteSelectedFile(self):
         file_name = self.Scrolledlistbox1.get(tk.ANCHOR)
         self.Scrolledlistbox1.delete(tk.ANCHOR)
@@ -816,13 +822,14 @@ class NetworkPeer(Base):
         self.client_send(self.server_info,
                          msgtype='DELETE_FILE', msgdata=peer_info)
         
-    def updateToServer(self,file_name):
+    def updateToServer(self,file_name,file_path):
         """ Upload repo to server. """
         peer_info = {
             'peername': self.name,
             'host': self.serverhost,
             'port': self.serverport,
-            'filename': file_name
+            'filename': file_name,
+            'filepath': file_path
         }
         self.client_send(self.server_info,
                          msgtype='FILE_REPO', msgdata=peer_info)

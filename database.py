@@ -19,6 +19,7 @@ try:
                 FILE_ID INTEGER PRIMARY KEY AUTOINCREMENT,
                 CLIENT_ID INTEGER REFERENCES client (ID),
                 NAME TEXT
+                FILEPATH TEXT
                 );''')
     cnt.commit()
 # Handle errors
