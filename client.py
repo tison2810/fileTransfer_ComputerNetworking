@@ -316,7 +316,7 @@ class RepoPage(tk.Frame):
         self.send_file.configure(highlightbackground="#d9d9d9")
         self.send_file.configure(highlightcolor="black")
         self.send_file.configure(pady="0")
-        self.send_file.configure(text='''Update cho server''',command=lambda: self.updateToServer())
+        self.send_file.configure(text='''Update cho server''',command=lambda: network_peer.updateToServer(self.Scrolledlistbox1.get(tk.ANCHOR)))
 
         self.file_find = tk.Entry(self)
         self.file_find.place(relx=0.359, rely=0.12, height=31, relwidth=0.368)
@@ -410,21 +410,10 @@ class RepoPage(tk.Frame):
                 "Local Repository", '{} has been added to localrepo!'.format(file_name))
     
     def deleteSelectedFile(self):
-        self.Scrolledlistbox1.delete(tk.ANCHOR)
-    
-    def updateToServer(self):
         file_name = self.Scrolledlistbox1.get(tk.ANCHOR)
-        """ Upload repo to server. """
-        peer_info = {
-            'peername': self.name,
-            'host': self.serverhost,
-            'port': self.serverport,
-            'filename': file_name
-        }
-        self.client_send(self.server_info,
-                         msgtype='FILE_REPO', msgdata=peer_info)
+        self.Scrolledlistbox1.delete(tk.ANCHOR)
+        network_peer.deleteFileServer(file_name)
         
-
 # The following code is added to facilitate the Scrolled widgets you specified.
 class AutoScroll(object):
     '''Configure the scrollbars for a widget.'''
@@ -816,7 +805,27 @@ class NetworkPeer(Base):
                          msgtype='PEER_LOGOUT', msgdata=peer_info)
 
     ## ===========================================================##
-
+    def deleteFileServer(self,file_name):
+        """ Delete file from server. """
+        peer_info = {
+            'peername': self.name,
+            'host': self.serverhost,
+            'port': self.serverport,
+            'filename': file_name
+        }
+        self.client_send(self.server_info,
+                         msgtype='DELETE_FILE', msgdata=peer_info)
+        
+    def updateToServer(self,file_name):
+        """ Upload repo to server. """
+        peer_info = {
+            'peername': self.name,
+            'host': self.serverhost,
+            'port': self.serverport,
+            'filename': file_name
+        }
+        self.client_send(self.server_info,
+                         msgtype='FILE_REPO', msgdata=peer_info)
 ## ===========================================================##
 ## ===========================================================##
 app = tkinterApp()

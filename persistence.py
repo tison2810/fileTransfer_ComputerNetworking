@@ -98,11 +98,11 @@ def add_new_file(username, filename):
         # Connect to DB
         cnt = sqlite3.connect('user.db')
         # insert new record
-        cursor = cnt.excute('''SELECT ID FROM client WHERE NAME = ?;''',(username,))
+        cursor = cnt.execute('''SELECT ID FROM client WHERE NAME = ?;''',(username,))
         user_id = cursor.fetchone()
         if user_id:
             user_id = user_id[0]
-            cnt.excute('''INSERT INTO file (CLIENT_ID, NAME) VALUE (?, ?);''',(user_id, filename))
+            cnt.execute('''INSERT INTO file (CLIENT_ID, NAME) VALUE (?, ?);''',(user_id, filename))
             cnt.commit()
     # Handle errors
     except sqlite3.Error as error:
@@ -117,11 +117,11 @@ def delete_file(username, filename):
         # Connect to DB
         cnt = sqlite3.connect('user.db')
         # insert new record
-        cursor = cnt.excute('''SELECT ID FROM client WHERE NAME = ?;''',(username,))
+        cursor = cnt.execute('''SELECT ID FROM client WHERE NAME = ?;''',(username,))
         user_id = cursor.fetchone()
         if user_id:
             user_id = user_id[0]
-            cnt.excute('''DELETE FROM file WHERE (CLIENT_ID, NAME) = (?, ?);''',(user_id, filename))
+            cnt.execute('''DELETE FROM file WHERE (CLIENT_ID, NAME) = (?, ?);''',(user_id, filename))
             cnt.commit()
     # Handle errors
     except sqlite3.Error as error:
