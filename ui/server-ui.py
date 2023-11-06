@@ -23,7 +23,7 @@ class ClientFilesList(customtkinter.CTkToplevel):
         self.grid_columnconfigure(0, weight=1)
 
         self.scrollable_files_frame = customtkinter.CTkScrollableFrame(self, label_text="List of Files")
-        self.scrollable_files_frame.grid(row=0, column=0, rowspan=4, padx=(10, 0), pady=(10, 0), sticky="nsew")
+        self.scrollable_files_frame.grid(row=0, column=0, rowspan=4, padx=(10, 10), pady=(10, 10), sticky="nsew")
         
         self.scrollable_clients_files = []
         for i in range(100):
@@ -74,7 +74,7 @@ class App(customtkinter.CTk):
         # create scrollable frame for clients list
         ## to do: add clients to this frame
         self.scrollable_clients_frame = customtkinter.CTkScrollableFrame(self, label_text="Clients")
-        self.scrollable_clients_frame.grid(row=0, column=1, rowspan=4, padx=(10, 0), pady=(10, 0), sticky="nsew")
+        self.scrollable_clients_frame.grid(row=0, column=1, rowspan=3, padx=(10, 10), pady=(10, 10), sticky="nsew")
         self.scrollable_clients_frame.grid_columnconfigure((0), weight=1)
         self.scrollable_clients_names = []
         ## to do: modify range to number of current clients
@@ -89,6 +89,12 @@ class App(customtkinter.CTk):
 
             ping_button = customtkinter.CTkButton(master=self.scrollable_clients_frame, text="Ping", command=self.ping_client)
             ping_button.grid(row=i, column=2, padx=10, pady=(0, 20))
+
+        # create CLI
+        self.entry = customtkinter.CTkEntry(self, placeholder_text="Command...")
+        self.entry.grid(row=3, column=1, padx=(20, 20), pady=(20, 20), sticky="nsew")
+        # self.main_button_1 = customtkinter.CTkButton(master=self, text="Enter", fg_color="transparent", border_width=2, text_color=("gray10", "#DCE4EE"))
+        # self.main_button_1.grid(row=3, column=2, padx=(20, 20), pady=(20, 20), sticky="nsew")
 
 
     def change_appearance_mode_event(self, new_appearance_mode: str):
