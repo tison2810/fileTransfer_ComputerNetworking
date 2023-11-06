@@ -96,9 +96,9 @@ class CentralServer(Base):
         user_list = search_file_name(file_name)
 
         for peername in user_list:
-            if peer in self.onlineList:
+            if peername in self.onlineList:
                 peer_info = self.onlineList[peername]
-                self.shareList[peername] = {'hostname': peer_info['ip'], 'port': peer_info['port']}
+                self.shareList[peername] = tuple(peer_info['ip'], peer_info['port'])
 
         data = {'online_user_list_have_file': self.shareList}
 
@@ -121,7 +121,8 @@ class CentralServer(Base):
     def peer_upload(self, msgdata):
         peer_name = msgdata['peername']
         file_name = msgdata['filename']
-        add_new_file(peer_name, file_name)
+        file_path = msgdata['filepath']
+        add_new_file(peer_name, file_name, file_path)
     ## ===========================================================##
 
 

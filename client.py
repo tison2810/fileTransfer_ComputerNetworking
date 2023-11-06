@@ -257,7 +257,7 @@ class RepoPage(tk.Frame):
         _style_code()
         self.Scrolledlistbox1 = ScrolledListBox(self)
         self.Scrolledlistbox1.place(relx=0.045, rely=0.12, relheight=0.685
-                , relwidth=0.307)
+                , relwidth=0.5)
         self.Scrolledlistbox1.configure(background="white")
         self.Scrolledlistbox1.configure(cursor="xterm")
         self.Scrolledlistbox1.configure(disabledforeground="#a3a3a3")
@@ -360,6 +360,7 @@ class RepoPage(tk.Frame):
         self.send_connect_request.configure(highlightcolor="black")
         self.send_connect_request.configure(pady="0")
         self.send_connect_request.configure(text='''Gửi yêu cầu kết nối''')
+
         self.file_find_button = tk.Button(self)
         self.file_find_button.place(relx=0.872, rely=0.12, height=31, width=74)
         self.file_find_button.configure(activebackground="beige")
@@ -372,7 +373,7 @@ class RepoPage(tk.Frame):
         self.file_find_button.configure(highlightbackground="#d9d9d9")
         self.file_find_button.configure(highlightcolor="black")
         self.file_find_button.configure(pady="0")
-        self.file_find_button.configure(text='''Tìm kiếm''')
+        self.file_find_button.configure(text='''Tìm kiếm''', command=lambda: self.get_users_share_file_from_entry())
         self.filetype__find = ttk.Combobox(self)
         self.filetype__find.place(relx=0.737, rely=0.12, relheight=0.041
                 , relwidth=0.13)
@@ -419,6 +420,11 @@ class RepoPage(tk.Frame):
         file_name = self.Scrolledlistbox1.get(tk.ANCHOR)
         self.Scrolledlistbox1.delete(tk.ANCHOR)
         network_peer.deleteFileServer(file_name)
+
+    def get_users_share_file_from_entry(self):
+        file_name = self.file_find.get()
+        network_peer.send_listpeer(file_name)
+
         
 # The following code is added to facilitate the Scrolled widgets you specified.
 class AutoScroll(object):
@@ -533,7 +539,7 @@ def _on_shiftmouse(event, widget):
             widget.xview_scroll(1, 'units')
 
 class NetworkPeer(Base):
-    def __init__(self, serverhost='localhost', serverport=30000, server_info=('192.168.137.1', 40000)):
+    def __init__(self, serverhost='localhost', serverport=30000, server_info=('192.168.31.45', 40000)):
         super(NetworkPeer, self).__init__(serverhost, serverport)
 
         # init host and port of central server
@@ -629,8 +635,16 @@ class NetworkPeer(Base):
         }
         self.client_send(self.server_info,
                          msgtype='PEER_SEARCH', msgdata=peer_info)
-
+        
     def get_users_share_file(self, msgdata):
+        shareList = msgdata['online_user_list_have_file']
+        for peer in shareList:
+            peer_host = msgdata['hostname']
+            peer_port = msgdata['port']
+            info = peer_host + ":" + str(peer_port)
+            RepoPage.ScrolledListBox1.insert(tk.END, info)
+
+    def not_get_users_share_file(self, msgdata):
         """ Processing received message from server:
             Output username of all peers that have file which client is finding."""
         self.connectable_peer.clear()
@@ -642,7 +656,7 @@ class NetworkPeer(Base):
 
     ## ==========implement protocol for file request==========##
     def send_request(self, peername, filename):
-        """ Send a chat request to an online user. """
+        """ Send a file request to an online user. """
         try:
             server_info = self.connectable_peer[peername]
         except KeyError:
@@ -822,7 +836,7 @@ class NetworkPeer(Base):
         self.client_send(self.server_info,
                          msgtype='DELETE_FILE', msgdata=peer_info)
         
-    def updateToServer(self,file_name,file_path):
+    def updateToServer(self, file_name, file_path):
         """ Upload repo to server. """
         peer_info = {
             'peername': self.name,

@@ -93,7 +93,7 @@ def delete_user(username):
         if cnt:
             cnt.close() 
 
-def add_new_file(username, filename):
+def add_new_file(username, filename, filepath):
     try:
         # Connect to DB
         cnt = sqlite3.connect('user.db')
@@ -102,7 +102,7 @@ def add_new_file(username, filename):
         user_id = cursor.fetchone()
         if user_id:
             user_id = user_id[0]
-            cnt.execute('''INSERT INTO file (CLIENT_ID, NAME) VALUES (?, ?);''',(user_id, filename))
+            cnt.execute('''INSERT INTO file (CLIENT_ID, NAME, FILEPATH) VALUES (?, ?);''',(user_id, filename, filepath))
             cnt.commit()
     # Handle errors
     except sqlite3.Error as error:
@@ -132,13 +132,14 @@ def delete_file(username, filename):
             cnt.close() 
 
 def search_file_name(filename):
+    userlist = []
     try:
         # Connect to DB
         cnt = sqlite3.connect('user.db')
         # open a cursor
         cursor = cnt.execute('''SELECT c.NAME 
                                 FROM client c
-                                JOINT file s ON c.ID = s.CLIENT_ID
+                                JOIN file s ON c.ID = s.CLIENT_ID
                                 WHERE s.NAME = ?;''',(filename,))
         user_list = []
         for row in cursor:
