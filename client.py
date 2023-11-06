@@ -336,6 +336,7 @@ class RepoPage(tk.Frame):
         self.file_find_label.configure(foreground="#ffffff")
         self.file_find_label.configure(text='''Nhập tên file cần kiếm''')
         self.peer_list = ScrolledListBox(self)
+        peer_list = self.peer_list
         self.peer_list.place(relx=0.359, rely=0.173, relheight=0.57
                 , relwidth=0.509)
         self.peer_list.configure(background="white")
@@ -424,6 +425,9 @@ class RepoPage(tk.Frame):
     def get_users_share_file_from_entry(self):
         file_name = self.file_find.get()
         network_peer.send_listpeer(file_name)
+
+    def insertToPeerList(self, info):
+        self.peer_list.insert(tk.END, info)
 
         
 # The following code is added to facilitate the Scrolled widgets you specified.
@@ -638,12 +642,11 @@ class NetworkPeer(Base):
         
     def get_users_share_file(self, msgdata):
         shareList = msgdata['online_user_list_have_file']
-        for peer, data in shareList.items():
+        for data in shareList.items():
             peer_host, peer_port = data
-            print(peer_host)
-            print(peer_port)
-            info = peer_host + ":" + str(peer_port)
-            RepoPage.Scrolledlistbox1.insert(tk.END, info)
+            info = str(peer_port)
+            app.frames[RepoPage].peer_list.insert(tk.END, info)
+
 
     def not_get_users_share_file(self, msgdata):
         """ Processing received message from server:
