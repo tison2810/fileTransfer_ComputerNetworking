@@ -103,7 +103,7 @@ class CentralServer(Base):
 
         self.client_send((peer_host, peer_port),
                          msgtype='LIST_USER_SHARE_FILE', msgdata=data)
-        print(peer_name, " has been sent latest online user list!")
+        print(peer_name, " has been sent latest online user list have file!")
         self.shareList.clear()
 
     ## ================implement protocol for log out & exit=============##
