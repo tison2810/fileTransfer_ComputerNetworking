@@ -18,7 +18,7 @@ try:
     cnt.execute('''CREATE TABLE file (
                 FILE_ID INTEGER PRIMARY KEY AUTOINCREMENT,
                 CLIENT_ID INTEGER REFERENCES client (ID),
-                NAME TEXT
+                NAME TEXT,
                 FILEPATH TEXT
                 );''')
     cnt.commit()
