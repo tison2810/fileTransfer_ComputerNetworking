@@ -97,6 +97,7 @@ class CentralServer(Base):
 
         for peername in user_list:
             if peername in self.onlineList:
+                print(peername, " is online!")
                 self.shareList[peername] = self.onlineList[peername]
 
         data = {
