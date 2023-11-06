@@ -97,10 +97,15 @@ class CentralServer(Base):
 
         for peername in user_list:
             if peername in self.onlineList:
-                peer_info = self.onlineList[peername]
-                self.shareList[peername] = tuple(peer_info['ip'], peer_info['port'])
+                self.shareList[peername] = self.onlineList[peername]
 
-        data = {'online_user_list_have_file': self.shareList}
+        data = {
+            'online_user_list_have_file': self.shareList
+        }
+
+        for peer in self.shareList.items():
+            print(peer_host = peer['host'])
+            print(peer_port = peer['port'])
 
         self.client_send((peer_host, peer_port),
                          msgtype='LIST_USER_SHARE_FILE', msgdata=data)

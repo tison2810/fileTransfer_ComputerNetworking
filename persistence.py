@@ -102,11 +102,11 @@ def add_new_file(username, filename, filepath):
         user_id = cursor.fetchone()
         if user_id:
             user_id = user_id[0]
-            cnt.execute('''INSERT INTO file (CLIENT_ID, NAME, FILEPATH) VALUES (?, ?);''',(user_id, filename, filepath))
+            cnt.execute('''INSERT INTO file (CLIENT_ID, NAME, FILEPATH) VALUES (?, ?, ?);''',(user_id, filename, filepath))
             cnt.commit()
     # Handle errors
     except sqlite3.Error as error:
-        print('Error occured - ', error)
+        print('Error occurred - ', error)
     # Close DB Connection irrespective of success or failure
     finally:
         if cnt:

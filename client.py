@@ -539,7 +539,7 @@ def _on_shiftmouse(event, widget):
             widget.xview_scroll(1, 'units')
 
 class NetworkPeer(Base):
-    def __init__(self, serverhost='localhost', serverport=30000, server_info=('192.168.31.45', 40000)):
+    def __init__(self, serverhost='localhost', serverport=30000, server_info=('192.168.137.1', 40000)):
         super(NetworkPeer, self).__init__(serverhost, serverport)
 
         # init host and port of central server
@@ -638,9 +638,10 @@ class NetworkPeer(Base):
         
     def get_users_share_file(self, msgdata):
         shareList = msgdata['online_user_list_have_file']
-        for peer in shareList:
-            peer_host = msgdata['hostname']
-            peer_port = msgdata['port']
+        for peer in shareList.items():
+            peer_host = peer['host']
+            peer_port = peer['port']
+            print(peer_host, peer_port)
             info = peer_host + ":" + str(peer_port)
             RepoPage.ScrolledListBox1.insert(tk.END, info)
 
