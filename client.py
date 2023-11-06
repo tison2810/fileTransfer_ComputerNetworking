@@ -647,7 +647,6 @@ class NetworkPeer(Base):
             info = str(peer_port)
             app.frames[RepoPage].peer_list.insert(tk.END, info)
 
-
     def not_get_users_share_file(self, msgdata):
         """ Processing received message from server:
             Output username of all peers that have file which client is finding."""
