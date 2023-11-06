@@ -642,20 +642,10 @@ class NetworkPeer(Base):
         
     def get_users_share_file(self, msgdata):
         shareList = msgdata['online_user_list_have_file']
-<<<<<<< HEAD
-        for peer in shareList.items():
-            peer_host = peer['host']
-            peer_port = peer['port']
-            print(peer_host, peer_port)
-            info = peer_host + ":" + str(peer_port)
-            RepoPage.ScrolledListBox1.insert(tk.END, info)
-=======
         for data in shareList.items():
             peer_host, peer_port = data
             info = str(peer_port)
             app.frames[RepoPage].peer_list.insert(tk.END, info)
-
->>>>>>> tiSon
 
     def not_get_users_share_file(self, msgdata):
         """ Processing received message from server:
