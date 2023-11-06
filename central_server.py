@@ -97,7 +97,10 @@ class CentralServer(Base):
 
         for peername in user_list:
             if peername in self.onlineList:
+<<<<<<< HEAD
                 print(peername, " is online!")
+=======
+>>>>>>> tiSon
                 self.shareList[peername] = self.onlineList[peername]
 
         data = {
@@ -110,7 +113,7 @@ class CentralServer(Base):
 
         self.client_send((peer_host, peer_port),
                          msgtype='LIST_USER_SHARE_FILE', msgdata=data)
-        print(peer_name, " has been sent latest online user list!")
+        print(peer_name, " has been sent latest online user list have file!")
         self.shareList.clear()
 
     ## ================implement protocol for log out & exit=============##
