@@ -1375,9 +1375,34 @@ class RepoPage(tk.Frame):
         # create CLI
         self.entry = customtkinter.CTkEntry(self, placeholder_text="Command...")
         self.entry.grid(row=4, column=1, columnspan=2, padx=(10, 10), pady=(20, 20), sticky="nsew")
-        self.main_button_1 = customtkinter.CTkButton(master=self, text="Enter", fg_color="transparent", border_width=2, text_color=("gray10", "#DCE4EE"))
+        self.main_button_1 = customtkinter.CTkButton(master=self, text="Enter", command=lambda:self.commandLine(command = self.entry.get()),fg_color="transparent", border_width=2, text_color=("gray10", "#DCE4EE"))
         self.main_button_1.grid(row=4, column=3, padx=(10, 10), pady=(20, 20), sticky="nsew")
 
+    def commandLine(self, command):
+        parts = command.split():
+
+        if parts[0] == "publish":
+            if len(parts) == 3:
+                file_path = parts[1]
+                file_name = parts[2]
+                #Implement something to update file to server here#
+                #To do#
+            else:
+                message = "Lệnh không hợp lệ vui lòng nhập lại!"
+                tkinter.messagebox.showinfo(message)
+        elif parts[0] == "fetch":
+            if len(parts) == 2:
+                file_name = parts[1]
+                #Implement something to search file and doawnload it#
+                #To do#
+            else:
+                message = "Lệnh không hợp lệ vui lòng nhập lại!"
+                tkinter.messagebox.showinfo(message)
+        else:
+            message = "Lệnh không hợp lệ vui lòng nhập lại!"
+            tkinter.messagebox.showinfo(message)
+
+            
     def sendFile(self, friend_name):
         file_path = tkinter.filedialog.askopenfilename(initialdir="/",
                                                        title="Select a File",

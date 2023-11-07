@@ -113,7 +113,7 @@ class App(customtkinter.CTk):
         parts = command.split()
 
         if len(parts) < 2:
-            message = "Lệnh không hợp lệ vui lòng nhập lại"
+            message = "Lệnh không hợp lệ vui lòng nhập lại!"
             tkinter.messagebox.showinfo(message)
         
         if parts[0] == "discover":
@@ -121,7 +121,7 @@ class App(customtkinter.CTk):
                 username = parts[1]
                 self.view_client_files(username)
             else:
-                message = "Lệnh không hợp lệ vui lòng nhập lại"
+                message = "Lệnh không hợp lệ vui lòng nhập lại!"
                 tkinter.messagebox.showinfo(message)
 
         elif parts[0] == "ping":
@@ -129,11 +129,11 @@ class App(customtkinter.CTk):
                 username = parts[1]
                 self.ping_client(username)
             else:
-                message = "Lệnh không hợp lệ vui lòng nhập lại"
+                message = "Lệnh không hợp lệ vui lòng nhập lại!"
                 tkinter.messagebox.showinfo(message)
 
         else:
-            message = "Lệnh không hợp lệ vui lòng nhập lại"
+            message = "Lệnh không hợp lệ vui lòng nhập lại!"
             tkinter.messagebox.showinfo(message)
 
     def view_client_files(self,username):
