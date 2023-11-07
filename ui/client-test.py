@@ -9,7 +9,7 @@ import platform
 from Base import Base
  
 # GUI
-import tkinter
+import tkinter as tk
 import tkinter.messagebox
 import tkinter.filedialog
 from tkinter import simpledialog
@@ -174,14 +174,14 @@ class App(customtkinter.CTk):
 #         arrowcolor= _fgcolor)
 #     _style_code_ran = 1
 
-class tkinterApp(customtkinter.CTk):
+class tkinterApp(tk.Tk):
     # __init__ function for class tkinterApp
     def __init__(self, *args, **kwargs):
         # __init__ function for class Tk
-        customtkinter.CTk.__init__(self, *args, **kwargs)
+        tk.Tk.__init__(self, *args, **kwargs)
 
         # creating a container
-        container = customtkinter.CTkFrame(self)
+        container = tk.Frame(self)
         container.pack(side="top", fill="both", expand=True)
         container.grid_rowconfigure(0, weight=1)
         container.grid_columnconfigure(0, weight=1)
@@ -189,18 +189,19 @@ class tkinterApp(customtkinter.CTk):
         self.chatroom_textCons = None
 
         # initializing frames to an empty array
+        # self.frames = customtkinter.CTkFrame(self, bg_color="transparent")
         self.frames = {}
 
         # iterating through a tuple consisting
         # of the different page layouts
         for F in (StartPage, RegisterPage, LoginPage, RepoPage):
-            frame = F(container, self, *args, **kwargs)
+            frame = F(parent=container, controller=self)
             # initializing frame of that object from
             # startpage, registerpage, loginpage, chatpage respectively with
             # for loop
             self.frames[F] = frame
             frame.grid(row=0, column=0, sticky="nsew")
-            frame.configure(bg_color='white')
+            frame.configure(bg='white')
         self.show_frame(StartPage)
 
     # to display the current frame passed as parameter
@@ -208,31 +209,29 @@ class tkinterApp(customtkinter.CTk):
         frame = self.frames[cont]
         frame.tkraise()
 
-class StartPage(customtkinter.CTkFrame):
+class StartPage(tk.Frame):
     def __init__(self, parent, controller):
-        customtkinter.CTkFrame.__init__(self, parent)
-
-        # start page title
-        customtkinter.CTkLabel(self, text="P2P File Sharing", bg_color="#bf8bff", fg_color="white",
-                                font=("Verdana", 18)).pack(fill='x')
-        customtkinter.CTkLabel(self, text="", bg_color='white').pack()
-
+        tk.Frame.__init__(self, parent)
+        # set color mode
+        customtkinter.set_appearance_mode("light")
+        customtkinter.set_default_color_theme("blue")
+        # create title
+        self.page_title = customtkinter.CTkLabel(self, text="P2P File Sharing", font=("Arial Bold", 36))
+        self.page_title.pack(padx=10, pady=(80, 10))
         # set port label
-        customtkinter.CTkLabel(self, text="Set Port (1024 -> 65535)", bg_color='white').pack()
-
+        self.port_label = customtkinter.CTkLabel(self, text="Set Port (1024 -> 65535)", font=("Arial", 20))
+        self.port_label.pack(padx=10, pady=10)
         # set port entry
-        self.port_entry = customtkinter.CTkEntry(self, font=("Verdana", 11))
-        self.port_entry.pack()
-        customtkinter.CTkLabel(self, text="", bg_color='white').pack()
-
+        self.port_entry = customtkinter.CTkEntry(self, placeholder_text="Enter port number", border_width=1)
+        self.port_entry.pack(padx=10, pady=10)
         # create a register button
-        customtkinter.CTkButton(self, text="Đăng ký", bg_color="#5D0CB5", fg_color="white", command=lambda: self.enter_app(
-            controller=controller, port=self.port_entry.get(), page=RegisterPage)).pack()
-        customtkinter.CTkButton(self, text="", bg_color='white').pack()
-
+        self.register_button = customtkinter.CTkButton(self, text="Đăng ký", command=lambda: 
+                                self.enter_app(controller=controller, port=self.port_entry.get(), page=RegisterPage))
+        self.register_button.pack(padx=10, pady=10)
         # create a login button
-        customtkinter.CTkButton(self, text="Đăng nhập", bg_color="#A021E2", fg_color="white", command=lambda: self.enter_app(
-            controller=controller, port=self.port_entry.get(), page=LoginPage)).pack()
+        self.login_button = customtkinter.CTkButton(self, text="Đăng nhập", command=lambda: 
+                                self.enter_app(controller=controller, port=self.port_entry.get(), page=LoginPage))
+        self.login_button.pack(padx=10, pady=10)
 
     def enter_app(self, controller, port, page):
         try:
@@ -258,43 +257,41 @@ class StartPage(customtkinter.CTkFrame):
             self.port_entry.delete(0, customtkinter.END)
             display_noti("Port Error!",  "Cổng đã được sử dụng hoặc chứa giá trị rỗng")
 
-class RegisterPage(customtkinter.CTkFrame):
+class RegisterPage(tk.Frame):
     def __init__(self, parent, controller):
-        customtkinter.CTkFrame.__init__(self, parent)
-
+        tk.Frame.__init__(self, parent)
+        customtkinter.set_appearance_mode("light")
+        customtkinter.set_default_color_theme("blue")
+        # self.grid_columnconfigure(1, weight=1)
+        # self.grid_columnconfigure((1, 2), weight=1)
+        # self.grid_rowconfigure((0, 1), weight=1)
         # Sign Up Image
-        signup_pic = ImageTk.PhotoImage(asset.signup_image)
-        signupImg = tkinter.Label(self, image=signup_pic, bg='white')
-        signupImg.image = signup_pic
-        signupImg.place(x=50, y=50)
+        # signup_pic = ImageTk.PhotoImage(asset.signup_image)
+        # self.signupImg = tkinter.Label(self, image=signup_pic, bg='white')
+        # self.signupImg.image = signup_pic
+        # self.signupImg.place(x=50, y=50)        
 
-        # Title
-        customtkinter.CTkLabel(self, text='Đăng ký',
-                 fg_color='#bf8bff', bg_color='white',
-                 font=("Roboto", 24, 'bold')).place(x=670, y=100)
-        # Username
-        customtkinter.CTkLabel(self, text='Tên đăng nhập', bg_color='white',
-                 fg_color='#57a1f8', font=("Roboto", 11)).place(x=670, y=175)
-        self.username_entry = customtkinter.CTkEntry(self, fg_color='black',
-                                       bg_color='white', font=("Roboto", 10))
-        self.username_entry.place(x=675, y=200)
-        customtkinter.CTkFrame(self, bg_color='#777777').place(x=675, y=225)
+        self.frame = customtkinter.CTkFrame(master=self, fg_color="white")
+        self.frame.pack(fill='both', expand=True)
 
-        # Password
-        customtkinter.CTkLabel(self, text='Mật khẩu', bg_color='white',
-                 fg_color='#57a1f8', font=("Roboto", 11)).place(x=670, y=250)
-        self.password_entry = customtkinter.CTkEntry(self, fg_color='black',
-                                       bg_color='white', font=("Roboto", 10), show='*')
-        self.password_entry.place(x=675, y=275)
-        customtkinter.CTkFrame(self, width=275, bg_color='#777777').place(x=675, y=300)
+        self.title_label = customtkinter.CTkLabel(self.frame, text="Register", font=("Roboto Bold", 32))
+        self.title_label.pack(pady=(80, 10),padx=10)
+
+        self.username = customtkinter.CTkLabel(self.frame, text="Username", font=("Roboto", 14))
+        self.username.pack(pady=(0),padx=10)
+        self.username_entry = customtkinter.CTkEntry(self.frame, placeholder_text="Enter username", font=("Roboto", 12))
+        self.username_entry.pack(pady=(0),padx=10)
+
+        self.password = customtkinter.CTkLabel(self.frame, text="Password", font=("Roboto", 14))
+        self.password.pack(pady=(0),padx=10)
+        self.password_entry = customtkinter.CTkEntry(self.frame, placeholder_text="Enter password", font=("Roboto", 12))
+        self.password_entry.pack(pady=(0, 10),padx=10)
 
         # Submit
-        customtkinter.CTkButton(self, text='Đăng ký', bg_color='#bf8bff',
-                  fg_color='white', command=lambda: self.register_user(self.username_entry.get(), self.password_entry.get())).place(x=675, y=325)
-        customtkinter.CTkLabel(self, text="Đã có tài khoản ?",
-                 fg_color='black', bg_color='white', font=("Roboto", 10)).place(x=675, y=375)
-        customtkinter.CTkButton(self, text='Đăng nhập',
-                  bg_color='white', cursor='hand2', fg_color='#57a1f8', command=lambda: controller.show_frame(LoginPage)).place(x=670, y=400)
+        customtkinter.CTkButton(self.frame, text='Đăng ký', command=lambda: 
+                                self.register_user(self.username_entry.get(), self.password_entry.get())).pack(pady=(0, 10),padx=10)
+        customtkinter.CTkLabel(self.frame, text="Đã có tài khoản ?", font=("Roboto", 11)).pack(pady=(70, 0),padx=10)
+        customtkinter.CTkButton(self.frame, text='Đăng nhập', command=lambda: controller.show_frame(LoginPage)).pack(pady=(0, 10),padx=10)
 
     def register_user(self, username, password):
         network_peer.name = str(username)
@@ -304,42 +301,35 @@ class RegisterPage(customtkinter.CTkFrame):
         self.password_entry.delete(0, customtkinter.END)
         network_peer.send_register()
 
-class LoginPage(customtkinter.CTkFrame):
+class LoginPage(tk.Frame):
     def __init__(self, parent, controller):
-        customtkinter.CTkFrame.__init__(self, parent)
+        tk.Frame.__init__(self, parent)
         # Login Image
-        login_pic = ImageTk.PhotoImage(asset.login_image)
-        loginImg = tkinter.Label(self, image=login_pic)
-        loginImg.image = login_pic
-        loginImg.place(x=50, y=50)
+        # login_pic = ImageTk.PhotoImage(asset.login_image)
+        # loginImg = tkinter.Label(self, image=login_pic)
+        # loginImg.image = login_pic
+        # loginImg.place(x=50, y=50)
 
-        # Title
-        customtkinter.CTkLabel(self, text='Đăng nhập',
-                 fg_color='#bf8bff', bg_color='white',
-                 font=("Roboto", 24, 'bold')).place(x=670, y=100)
+        self.frame = customtkinter.CTkFrame(master=self, fg_color="white")
+        self.frame.pack(fill='both', expand=True)
 
-        # Username
-        customtkinter.CTkLabel(self, text="Username", fg_color='#57a1f8', font=("Roboto", 11)).place(x=670, y=175)
-        self.username_entry = customtkinter.CTkEntry(self, fg_color='black',
-                                       bg_color='white', font=("Roboto", 10))
-        self.username_entry.place(x=675, y=200)
-        customtkinter.CTkFrame(self, width=275, bg_color='#777777').place(x=675, y=225)
+        self.title_label = customtkinter.CTkLabel(self.frame, text="Log In", font=("Roboto Bold", 32))
+        self.title_label.pack(pady=(80, 10),padx=10)
 
-        # Password
-        customtkinter.CTkLabel(self, text='Mật khẩu', bg_color='white',
-                 fg_color='#57a1f8', font=("Roboto", 11)).place(x=670, y=250)
-        self.password_entry = customtkinter.CTkEntry(self, fg_color='black',
-                                       bg_color='white', font=("Roboto", 10), show='*')
-        self.password_entry.place(x=675, y=275)
-        customtkinter.CTkFrame(self, bg_color='#777777').place(x=675, y=300)
+        self.username = customtkinter.CTkLabel(self.frame, text="Username", font=("Roboto", 14))
+        self.username.pack(pady=(0),padx=10)
+        self.username_entry = customtkinter.CTkEntry(self.frame, placeholder_text="Enter username", font=("Roboto", 12))
+        self.username_entry.pack(pady=(0),padx=10)
 
-        # Submit
-        customtkinter.CTkButton(self, text='Đăng nhập', bg_color='#bf8bff',
-                  fg_color='white', command=lambda: self.login_user(username=self.username_entry.get(), password=self.password_entry.get())).place(x=675, y=325)
-        customtkinter.CTkLabel(self, text="Bạn không có tài khoản ?",
-                 fg_color='black', bg_color='white', font=("Roboto", 10)).place(x=675, y=375)
-        customtkinter.CTkButton(self, text='Đăng ký',
-                  bg_color='white', cursor='hand2', fg_color='#57a1f8', command=lambda: controller.show_frame(RegisterPage)).place(x=670, y=400)
+        self.password = customtkinter.CTkLabel(self.frame, text="Password", font=("Roboto", 14))
+        self.password.pack(pady=(0),padx=10)
+        self.password_entry = customtkinter.CTkEntry(self.frame, placeholder_text="Enter password", font=("Roboto", 12))
+        self.password_entry.pack(pady=(0, 10),padx=10)
+
+        customtkinter.CTkButton(self.frame, text='Đăng nhập', command=lambda: 
+                                self.register_user(self.username_entry.get(), self.username_entry.get())).pack(pady=(0, 10),padx=10)
+        customtkinter.CTkLabel(self.frame, text="Bạn không có tài khoản ?", font=("Roboto", 11)).pack(pady=(70, 0),padx=10)
+        customtkinter.CTkButton(self.frame, text='Đăng ký', cursor="hand2", command=lambda: controller.show_frame(RegisterPage)).pack(pady=(0, 10),padx=10)
 
     def login_user(self, username, password):
         network_peer.name = str(username)
@@ -349,9 +339,9 @@ class LoginPage(customtkinter.CTkFrame):
         self.password_entry.delete(0, customtkinter.END)
         network_peer.send_login()
 
-class RepoPage(customtkinter.CTkFrame):
+class RepoPage(tk.Frame):
     def __init__(self, parent, **kwargs):
-        customtkinter.CTkFrame.__init__(self, parent)
+        tk.Frame.__init__(self, parent)
         '''This class configures and populates the toplevel window.
            top is the toplevel containing window.'''
         
@@ -392,7 +382,7 @@ class RepoPage(customtkinter.CTkFrame):
         # end of sidebar
 
         #### create frame for repo
-        self.repo_frame = customtkinter.CTkFrame(self, fg_color_color="transparent")
+        self.repo_frame = customtkinter.CTkFrame(self, fg_color="transparent")
         self.repo_frame.grid(row=0, column=1, rowspan=3, sticky="nsew")
         self.repo_frame.grid_rowconfigure(0, weight=1)
         self.repo_frame.grid_columnconfigure(0, weight=1)
@@ -410,7 +400,7 @@ class RepoPage(customtkinter.CTkFrame):
             self.scrollable_file_names.append(file_label)
         # create repo buttons
         # create temp frame
-        self.temp_frame = customtkinter.CTkFrame(master=self.repo_frame, fg_color_color="transparent")
+        self.temp_frame = customtkinter.CTkFrame(master=self.repo_frame, fg_color="transparent")
         self.temp_frame.grid(row=1, column=0, sticky="nsew")
         self.temp_frame.grid_rowconfigure(0, weight=1)
         self.temp_frame.grid_columnconfigure(0, weight=1)
@@ -429,7 +419,7 @@ class RepoPage(customtkinter.CTkFrame):
         self.update_button.grid(row=3, column=0, padx=(10, 10), pady=(10, 10), sticky="nsew")
 
         ### create frame for peer list
-        self.peer_frame = customtkinter.CTkFrame(self, fg_color_color="transparent")
+        self.peer_frame = customtkinter.CTkFrame(self, fg_color="transparent")
         self.peer_frame.grid(row=0, column=2, rowspan=3, sticky="nsew")
         self.peer_frame.grid_rowconfigure(0, weight=1)
         self.peer_frame.grid_columnconfigure(0, weight=1)
@@ -446,7 +436,7 @@ class RepoPage(customtkinter.CTkFrame):
             peer_label.grid(row=i, column=0, padx=10, pady=(0, 20))
             self.scrollable_peer_names.append(peer_label)
         # create search for file
-        self.search_frame = customtkinter.CTkFrame(self.peer_frame, fg_color_color="transparent")
+        self.search_frame = customtkinter.CTkFrame(self.peer_frame, fg_color="transparent")
         self.search_frame.grid(row=1, column=0, padx=(10, 10), pady=(10, 10), sticky="nsew")
         self.search_frame.grid_rowconfigure(0, weight=1)
         self.search_frame.grid_columnconfigure(0, weight=1)
@@ -499,6 +489,18 @@ class RepoPage(customtkinter.CTkFrame):
         file_name = self.Scrolledlistbox1.get(customtkinter.ANCHOR)
         self.Scrolledlistbox1.delete(customtkinter.ANCHOR)
         network_peer.deleteFileServer(file_name)
+
+    ## to do: stop server
+    def sidebar_button_event(self):
+        print("huhu")
+
+    def change_appearance_mode_event(self, new_appearance_mode: str):
+        customtkinter.set_appearance_mode(new_appearance_mode)
+
+    def change_scaling_event(self, new_scaling: str):
+        new_scaling_float = int(new_scaling.replace("%", "")) / 100
+        customtkinter.set_widget_scaling(new_scaling_float)
+
 
 # ------ end of GUI ------- #
 class NetworkPeer(Base):
@@ -804,14 +806,15 @@ class NetworkPeer(Base):
 
 
 # ------ app run ---------- #
-app = tkinterApp()
-app.title('P2P File Sharing')
-app.geometry("1024x600")
-app.resizable(False, False)
+if __name__ == "__main__":
+    app = tkinterApp()
+    app.title('P2P File Sharing')
+    app.geometry("1024x600")
+    app.resizable(False, False)
 
-def handle_on_closing_event():
-    if tkinter.messagebox.askokcancel("Thoát", "Bạn muốn thoát khỏi ứng dụng?"):
-        app.destroy()
+    def handle_on_closing_event():
+        if tkinter.messagebox.askokcancel("Thoát", "Bạn muốn thoát khỏi ứng dụng?"):
+            app.destroy()
 
-app.protocol("WM_DELETE_WINDOW", handle_on_closing_event)
-app.mainloop()
+    app.protocol("WM_DELETE_WINDOW", handle_on_closing_event)
+    app.mainloop()
