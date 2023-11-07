@@ -414,6 +414,11 @@ class RepoPage(tk.Frame):
     def insertToPeerList(self, info):
         self.peer_list.insert(tk.END, info)
 
+    def reloadRepo(self):
+        for file in self.fileListBox.get(0, tk.END):
+            self.fileListBox.delete(0, tk.END)
+        network_peer.reloadRepoList()
+
     ## to do: stop server
     def sidebar_button_event(self):
         print("huhu")
@@ -534,7 +539,12 @@ class NetworkPeer(Base):
             peer_host, peer_port = data
             info = str(peer_host) + "," + str(peer_port)
             app.frames[RepoPage].peerListBox.insert(tk.END, info)
-    
+
+    def reloadRepoList(self):
+        fileList = []
+        fileList = persistence.get_user_file(self.name)
+        for file in fileList:
+            app.frames[RepoPage].fileListBox.insert(0,file)
 
     # def not_get_users_share_file(self, msgdata):
     #     """ Processing received message from server:
