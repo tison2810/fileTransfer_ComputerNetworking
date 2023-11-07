@@ -6,7 +6,6 @@ import time
 import random
 import sys
 import platform
-
 from Base import Base
  
 # GUI
@@ -250,15 +249,13 @@ class RepoPage(tk.Frame):
         ## to do: add file names to this frame
         self.scrollable_repo_frame = customtkinter.CTkScrollableFrame(self.repo_frame, label_text="Repository")
         self.scrollable_repo_frame.grid(row=0, column=0, padx=(10, 10), pady=(10, 10), sticky="nsew")
-        self.scrollable_repo_frame.grid_columnconfigure(0, weight=1)
         self.scrollable_repo_frame.grid_rowconfigure(0, weight=1)
         self.scrollable_file_names = []
         ## to do: modify range to number of current files
         for i in range(100):
-            file_label = customtkinter.CTkLabel(master=self.scrollable_repo_frame, text="File's Name")
-            file_label.grid(row=i, column=0, padx=10, pady=(0, 20))
-            self.scrollable_file_names.append(file_label)
-        # create repo buttons
+            file = customtkinter.CTkCheckBox(master=self.scrollable_repo_frame, text="File's Name")
+            file.grid(row=i, column=0, padx=10, pady=(0, 20))
+            self.scrollable_file_names.append(file)
         # create temp frame
         self.temp_frame = customtkinter.CTkFrame(master=self.repo_frame, fg_color="transparent")
         self.temp_frame.grid(row=1, column=0, sticky="nsew")
@@ -278,7 +275,8 @@ class RepoPage(tk.Frame):
         self.update_button = customtkinter.CTkButton(master=self.repo_frame, border_width=2, text="Reload Repo")
         self.update_button.grid(row=3, column=0, padx=(10, 10), pady=(10, 10), sticky="nsew")
 
-        ### create frame for peer list
+
+        # create frame for peer list
         self.peer_frame = customtkinter.CTkFrame(self, fg_color="transparent")
         self.peer_frame.grid(row=0, column=2, rowspan=3, sticky="nsew")
         self.peer_frame.grid_rowconfigure(0, weight=1)
@@ -287,14 +285,13 @@ class RepoPage(tk.Frame):
         ## to do: add peer names to this frame
         self.scrollable_peer_frame = customtkinter.CTkScrollableFrame(self.peer_frame, label_text="Peer List")
         self.scrollable_peer_frame.grid(row=0, column=0, padx=(10, 10), pady=(10, 10), sticky="nsew")
-        self.scrollable_peer_frame.grid_columnconfigure(0, weight=1)
         self.scrollable_peer_frame.grid_rowconfigure(0, weight=1)
         self.scrollable_peer_names = []
         ## to do: modify range to number of current peers
         for i in range(100):
-            peer_label = customtkinter.CTkLabel(master=self.scrollable_peer_frame, text="Peer's Name")
-            peer_label.grid(row=i, column=0, padx=10, pady=(0, 20))
-            self.scrollable_peer_names.append(peer_label)
+            peer = customtkinter.CTkCheckBox(master=self.scrollable_peer_frame, text="Peer's Name")
+            peer.grid(row=i, column=0, padx=10, pady=(0, 20))
+            self.scrollable_peer_names.append(peer)
         # create search for file
         self.search_frame = customtkinter.CTkFrame(self.peer_frame, fg_color="transparent")
         self.search_frame.grid(row=1, column=0, padx=(10, 10), pady=(10, 10), sticky="nsew")
