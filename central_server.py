@@ -122,7 +122,7 @@ class App(customtkinter.CTk):
                 self.view_client_files(username)
             else:
                 message = "Lệnh không hợp lệ vui lòng nhập lại!"
-                tkinter.messagebox.showinfo(message)
+                tkinter.messagebox.showinfo("Thông Báo", message)
 
         elif parts[0] == "ping":
             if len(parts) == 2:

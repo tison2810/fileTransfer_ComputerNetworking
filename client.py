@@ -1379,7 +1379,7 @@ class RepoPage(tk.Frame):
         self.main_button_1.grid(row=4, column=3, padx=(10, 10), pady=(20, 20), sticky="nsew")
 
     def commandLine(self, command):
-        parts = command.split():
+        parts = command.split()
 
         if parts[0] == "publish":
             if len(parts) == 3:
@@ -1387,6 +1387,9 @@ class RepoPage(tk.Frame):
                 file_name = parts[2]
                 #Implement something to update file to server here#
                 #To do#
+                network_peer.updateToServer(file_name, file_path)
+                self.fileListBox.insert(0,file_name + "(" + file_path +")")
+                
             else:
                 message = "Lệnh không hợp lệ vui lòng nhập lại!"
                 tkinter.messagebox.showinfo(message)
@@ -1395,6 +1398,7 @@ class RepoPage(tk.Frame):
                 file_name = parts[1]
                 #Implement something to search file and doawnload it#
                 #To do#
+                self.chooseFilefromPath(file_name)
             else:
                 message = "Lệnh không hợp lệ vui lòng nhập lại!"
                 tkinter.messagebox.showinfo(message)
@@ -1431,6 +1435,11 @@ class RepoPage(tk.Frame):
             self.fileListBox.insert(0,file_name)
             tkinter.messagebox.showinfo(
                 "Local Repository", '{} has been added to localrepo!'.format(file_name))
+            
+    def chooseFilefromPath(self, file_path):
+            self.fileListBox.insert(0,file_path)
+            tkinter.messagebox.showinfo(
+                "Local Repository", '{} has been added to localrepo!'.format(file_path))
             
     def fileRequest(self):
         peer_info = self.peerListBox.get(tk.ANCHOR)
@@ -1473,7 +1482,7 @@ class RepoPage(tk.Frame):
 # ------ end of GUI ------- #
 
 class NetworkPeer(Base):
-    def __init__(self, serverhost='localhost', serverport=30000, server_info=('192.168.1.155', 40000)):
+    def __init__(self, serverhost='localhost', serverport=30000, server_info=('192.168.1.154', 40000)):
         super(NetworkPeer, self).__init__(serverhost, serverport)
 
         # init host and port of central server
@@ -1620,7 +1629,7 @@ class NetworkPeer(Base):
             }
             self.client_send((host, port), msgtype='FILE_ACCEPT', msgdata=data)
             display_noti("File Request Accepted",
-                         "Get in touch!")
+                         "Send The File!")
             self.friendlist[peername] = (host, port)
             file_path = tkinter.filedialog.askopenfilename(initialdir="/",
                                                        title="Select a File",
@@ -1646,7 +1655,7 @@ class NetworkPeer(Base):
         host = msgdata['host']
         port = msgdata['port']
         display_noti("File Request Result",
-                     'FILE ACCEPTED: {} --- {}:{}.'.format(peername, host, port))
+                     "Accepted")
         self.friendlist[peername] = (host, port)
 
     def file_refuse(self, msgdata):
