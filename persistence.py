@@ -197,25 +197,6 @@ def delete_file(username, filename):
         if cnt:
             cnt.close() 
 
-def count_user_files(username):
-    try:
-        # Connect to DB and create a cursor
-        conn = sqlite3.connect('user.db')
-        cursor = conn.cursor()
-
-        # Execute query to count files for user
-        cursor.execute("SELECT COUNT(*) FROM file WHERE CLIENT_ID = (SELECT ID FROM client WHERE NAME = ?)", (username,))
-        count = cursor.fetchone()[0]
-
-        # Close cursor and connection
-        cursor.close()
-        conn.close()
-
-        return count
-
-    except sqlite3.Error as error:
-        print('Error occurred - ', error)
-
 def search_file_name(filename):
     userlist = []
     try:
