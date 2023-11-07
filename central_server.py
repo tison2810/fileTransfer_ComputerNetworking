@@ -135,6 +135,9 @@ class CentralServer(Base):
         # manage online user list have file which have been searched
         self.shareList = {}
 
+        # Delete data in table online
+        delete_all_onl_users()
+
         # define handlers for received message of central server
         handlers = {
             'PEER_REGISTER': self.peer_register,
