@@ -67,26 +67,29 @@ class App(customtkinter.CTk):
         self.scaling_optionemenu.grid(row=8, column=0, padx=20, pady=(10, 20))
         # end of sidebar
 
-        # create frame for repo
+        ### create frame for REPO
         self.repo_frame = customtkinter.CTkFrame(self, fg_color="transparent")
-        self.repo_frame.grid(row=0, column=1, rowspan=3, sticky="nsew")
+        self.repo_frame.grid(row=0, column=1, rowspan=4, sticky="nsew")
         self.repo_frame.grid_rowconfigure(0, weight=1)
         self.repo_frame.grid_columnconfigure(0, weight=1)
         # create scrollable frame for repo list
         ## to do: add file names to this frame
         self.scrollable_repo_frame = customtkinter.CTkScrollableFrame(self.repo_frame, label_text="Repository")
         self.scrollable_repo_frame.grid(row=0, column=0, padx=(10, 10), pady=(10, 10), sticky="nsew")
-        self.scrollable_repo_frame.grid_columnconfigure(0, weight=1)
         self.scrollable_repo_frame.grid_rowconfigure(0, weight=1)
         self.scrollable_file_names = []
         ## to do: modify range to number of current files
         for i in range(100):
-            file_label = customtkinter.CTkLabel(master=self.scrollable_repo_frame, text="File's Name")
-            file_label.grid(row=i, column=0, padx=10, pady=(0, 20))
-            self.scrollable_file_names.append(file_label)
+            file = customtkinter.CTkLabel(master=self.scrollable_repo_frame, text="File's Name")
+            file.grid(row=i, column=0, padx=10, pady=(0, 20))
+            self.scrollable_file_names.append(file)
+        # create listbox
+        repo_items = ["hehe", "huhu", "hihi"] ##### to be replaced with scrollable_peer_names after adding to list
+        self.repo_list = customtkinter.CTkComboBox(self.repo_frame, values=repo_items, command=self.listbox_callback)
+        self.repo_list.grid(row=1, column=0, padx=(10, 10), pady=(10, 10), sticky="nsew")
         # create temp frame
         self.temp_frame = customtkinter.CTkFrame(master=self.repo_frame, fg_color="transparent")
-        self.temp_frame.grid(row=1, column=0, sticky="nsew")
+        self.temp_frame.grid(row=2, column=0, sticky="nsew")
         self.temp_frame.grid_rowconfigure(0, weight=1)
         self.temp_frame.grid_columnconfigure(0, weight=1)
         self.temp_frame.grid_columnconfigure(1, weight=1)
@@ -98,32 +101,35 @@ class App(customtkinter.CTk):
         self.add_button.grid(row=0, column=1, padx=(10, 10), pady=(10, 10), sticky="nsew")
         # create update to server button
         self.update_button = customtkinter.CTkButton(master=self.repo_frame, border_width=2, text="Update to Server")
-        self.update_button.grid(row=2, column=0, padx=(10, 10), pady=(10, 10), sticky="nsew")
+        self.update_button.grid(row=3, column=0, padx=(10, 10), pady=(10, 10), sticky="nsew")
         # create reload repo button
         self.update_button = customtkinter.CTkButton(master=self.repo_frame, border_width=2, text="Reload Repo")
-        self.update_button.grid(row=3, column=0, padx=(10, 10), pady=(10, 10), sticky="nsew")
+        self.update_button.grid(row=4, column=0, padx=(10, 10), pady=(10, 10), sticky="nsew")
 
 
         # create frame for peer list
         self.peer_frame = customtkinter.CTkFrame(self, fg_color="transparent")
-        self.peer_frame.grid(row=0, column=2, rowspan=3, sticky="nsew")
+        self.peer_frame.grid(row=0, column=2, rowspan=4, sticky="nsew")
         self.peer_frame.grid_rowconfigure(0, weight=1)
         self.peer_frame.grid_columnconfigure(0, weight=1)
         # create scrollable peer list
         ## to do: add peer names to this frame
         self.scrollable_peer_frame = customtkinter.CTkScrollableFrame(self.peer_frame, label_text="Peer List")
         self.scrollable_peer_frame.grid(row=0, column=0, padx=(10, 10), pady=(10, 10), sticky="nsew")
-        self.scrollable_peer_frame.grid_columnconfigure(0, weight=1)
         self.scrollable_peer_frame.grid_rowconfigure(0, weight=1)
         self.scrollable_peer_names = []
         ## to do: modify range to number of current peers
         for i in range(100):
-            peer_label = customtkinter.CTkLabel(master=self.scrollable_peer_frame, text="Peer's Name")
-            peer_label.grid(row=i, column=0, padx=10, pady=(0, 20))
-            self.scrollable_peer_names.append(peer_label)
+            peer = customtkinter.CTkLabel(master=self.scrollable_peer_frame, text="Peer's Name")
+            peer.grid(row=i, column=0, padx=10, pady=(0, 20))
+            self.scrollable_peer_names.append(peer)
+        # create listbox
+        list_items = ["hehe", "huhu", "hihi"] ##### to be replaced with scrollable_peer_names after adding to list
+        self.list_box = customtkinter.CTkComboBox(self.peer_frame, values=list_items, command=self.listbox_callback)
+        self.list_box.grid(row=1, column=0, padx=(10, 10), pady=(10, 10), sticky="nsew")
         # create search for file
         self.search_frame = customtkinter.CTkFrame(self.peer_frame, fg_color="transparent")
-        self.search_frame.grid(row=1, column=0, padx=(10, 10), pady=(10, 10), sticky="nsew")
+        self.search_frame.grid(row=2, column=0, padx=(10, 10), pady=(10, 10), sticky="nsew")
         self.search_frame.grid_rowconfigure(0, weight=1)
         self.search_frame.grid_columnconfigure(0, weight=1)
         self.search_entry = customtkinter.CTkEntry(master=self.search_frame, placeholder_text="Search...")
@@ -133,11 +139,11 @@ class App(customtkinter.CTk):
         # create send connect request button
         self.request_button = customtkinter.CTkButton(master=self.peer_frame, border_width=2,
                                                      command=lambda:self.chooseFile(), text="Send Connect Request")
-        self.request_button.grid(row=2, column=0, padx=(10, 10), pady=(10, 10), sticky="nsew")
+        self.request_button.grid(row=3, column=0, padx=(10, 10), pady=(10, 10), sticky="nsew")
 
         # create CLI
         self.entry = customtkinter.CTkEntry(self, placeholder_text="Command...")
-        self.entry.grid(row=3, column=1, columnspan=3, padx=(20, 20), pady=(20, 20), sticky="nsew")
+        self.entry.grid(row=4, column=1, columnspan=3, padx=(20, 20), pady=(20, 20), sticky="nsew")
         # self.main_button_1 = customtkinter.CTkButton(master=self, text="Enter", fg_color="transparent", border_width=2, text_color=("gray10", "#DCE4EE"))
         # self.main_button_1.grid(row=3, column=2, padx=(20, 20), pady=(20, 20), sticky="nsew")
 
@@ -186,6 +192,10 @@ class App(customtkinter.CTk):
     ## to do: stop server
     def sidebar_button_event(self):
         print("huhu")
+
+    ## to do: 
+    def listbox_callback():
+        print("done")
 
         
 
