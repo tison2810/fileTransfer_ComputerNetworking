@@ -25,8 +25,8 @@ class ClientFilesList(customtkinter.CTkToplevel):
         self.scrollable_files_frame.grid(row=0, column=0, rowspan=4, padx=(10, 0), pady=(10, 0), sticky="nsew")
         
         self.scrollable_clients_files = []
-        for i in range(100):
-            client_label = customtkinter.CTkLabel(master=self.scrollable_files_frame, text="File's Name")
+        for i, file_name in enumerate(self.scrollable_clients_files):
+            client_label = customtkinter.CTkLabel(master=self.scrollable_files_frame, text=file_name)
             client_label.grid(row=i, column=0, padx=10, pady=(0, 20))
             self.scrollable_clients_files.append(client_label)
 
@@ -83,9 +83,9 @@ class App(customtkinter.CTk):
             client_label.grid(row=i, column=0, padx=10, pady=(0, 20))
             self.scrollable_clients_labels.append(client_label)
 
-            view_button = customtkinter.CTkButton(master=self.scrollable_clients_frame, text="View Files", command=lambda:self.view_client_files(username))
+            view_button = customtkinter.CTkButton(master=self.scrollable_clients_frame, text="View Files", command=lambda username=username: self.view_client_files(username))
             view_button.grid(row=i, column=1, padx=10, pady=(0, 20))
-            # self.files_list = None
+            self.files_list = None
 
             ping_button = customtkinter.CTkButton(master=self.scrollable_clients_frame, text="Ping", command=self.ping_client)
             ping_button.grid(row=i, column=2, padx=10, pady=(0, 20))
@@ -102,14 +102,14 @@ class App(customtkinter.CTk):
     def sidebar_button_event(self):
         print("huhu")
 
-    def view_client_files(self, username):
+    def view_client_files(self,username):
+        print(username)
+        self.files_list=get_user_file(username)
         print("button pressed")
-        self.files_list = get_user_file(username)
-        print(self.files_list)
-        if self.files_list is None or not all(widget.winfo_exists() for widget in self.files_list):
-            self.files_list = ClientFilesList(self)  # create window if its None or destroyed
-        # else:
-        #     self.files_list.focus()  # if window exists focus it
+        if self.files_list is None or not isinstance(self.files_list, ClientFilesList):
+            self.files_list = ClientFilesList(self)  # create window if its None or not a ClientFilesList
+        else:
+            self.files_list.focus()# if window exists focus it
 
     ## to do:
     def ping_client():
