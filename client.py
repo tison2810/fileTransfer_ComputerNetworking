@@ -1266,7 +1266,7 @@ class RepoPage(tk.Frame):
         # create sidebar frame with widgets
         # start of sidebar
         self.sidebar_frame = customtkinter.CTkFrame(self, width=140, corner_radius=0)
-        self.sidebar_frame.grid(row=0, column=0, rowspan=4, sticky="nsew")
+        self.sidebar_frame.grid(row=0, column=0, rowspan=5, sticky="nsew")
         self.sidebar_frame.grid_rowconfigure(4, weight=1)
 
         self.logo_label = customtkinter.CTkLabel(self.sidebar_frame, text="P2P Server", font=customtkinter.CTkFont(size=20, weight="bold"))
@@ -1338,7 +1338,7 @@ class RepoPage(tk.Frame):
 
         ### create frame for peer list
         self.peer_frame = customtkinter.CTkFrame(self, fg_color="transparent")
-        self.peer_frame.grid(row=0, column=2, rowspan=3, sticky="nsew")
+        self.peer_frame.grid(row=0, column=2, columnspan = 2, rowspan=3, sticky="nsew")
         self.peer_frame.grid_rowconfigure(0, weight=1)
         self.peer_frame.grid_columnconfigure(0, weight=1)
         # create scrollable peer list
@@ -1369,14 +1369,14 @@ class RepoPage(tk.Frame):
         self.search_button.grid(row=0, column=1, padx=(10, 0), pady=0, sticky="nsew")
         # create send connect request button
         self.request_button = customtkinter.CTkButton(master=self.peer_frame, border_width=2,
-                                                     command=lambda:self.chooseFile(), text="Send Connect Request")
+                                                     command=lambda:self.fileRequest(), text="Send Connect Request")
         self.request_button.grid(row=3, column=0, padx=(10, 10), pady=(10, 10), sticky="nsew")
 
         # create CLI
         self.entry = customtkinter.CTkEntry(self, placeholder_text="Command...")
-        self.entry.grid(row=4, column=1, columnspan=3, padx=(20, 20), pady=(20, 20), sticky="nsew")
-        # self.main_button_1 = customtkinter.CTkButton(master=self, text="Enter", fg_color="transparent", border_width=2, text_color=("gray10", "#DCE4EE"))
-        # self.main_button_1.grid(row=3, column=2, padx=(20, 20), pady=(20, 20), sticky="nsew")
+        self.entry.grid(row=4, column=1, columnspan=2, padx=(10, 10), pady=(20, 20), sticky="nsew")
+        self.main_button_1 = customtkinter.CTkButton(master=self, text="Enter", fg_color="transparent", border_width=2, text_color=("gray10", "#DCE4EE"))
+        self.main_button_1.grid(row=4, column=3, padx=(10, 10), pady=(20, 20), sticky="nsew")
 
     def sendFile(self, friend_name):
         file_path = tkinter.filedialog.askopenfilename(initialdir="/",
@@ -1406,9 +1406,11 @@ class RepoPage(tk.Frame):
             self.fileListBox.insert(0,file_name)
             tkinter.messagebox.showinfo(
                 "Local Repository", '{} has been added to localrepo!'.format(file_name))
+            
     def fileRequest(self):
         peer_name = self.peerListBox.get(tk.ANCHOR)
-        network_peer.send_file_request(peer_name, self.fileNameServer)
+        file_name = self.search_entry.get()
+        network_peer.send_request(peer_name, file_name)
 
     def updateListFile(self):
         self.fileNameServer = simpledialog.askstring("Input","Nhập tên file lưu trên Server", parent = self)
@@ -1466,9 +1468,6 @@ class NetworkPeer(Base):
         self.message_format = '{peername}: {message}'
         # file buffer
         self.file_buf = []
-
-        #global
-        fileCounting = 0
 
         # define handlers for received message of network peer
         handlers = {
@@ -1531,7 +1530,7 @@ class NetworkPeer(Base):
     def login_error(self, msgdata):
         """ Processing received message from server: Login failed on the server. """
         display_noti('Login Noti', 'Login Error. Username not existed!')
-        print('Login Error. Username not existed. Register!')
+        print('Login Error. Username not existed or wrong password')
     ## ===========================================================##
 
     ## ==========implement protocol for getting online user list who have file that client find==========##
@@ -1548,9 +1547,9 @@ class NetworkPeer(Base):
         
     def get_users_share_file(self, msgdata):
         shareList = msgdata['online_user_list_have_file']
-        for data in shareList.items():
+        for peername, data in shareList.items():
             peer_host, peer_port = data
-            info = str(peer_port) + ":" + str(peer_host)
+            info = str(peername)
             app.frames[RepoPage].peerListBox.insert(tk.END, info)
     
 
