@@ -220,10 +220,6 @@ class CentralServer(Base):
 
         for peername in user_list:
             if peername in self.onlineList:
-<<<<<<< HEAD
-                print(peername, " is online!")
-=======
->>>>>>> tiSon
                 self.shareList[peername] = self.onlineList[peername]
 
         data = {
