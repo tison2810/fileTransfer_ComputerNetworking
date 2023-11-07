@@ -75,7 +75,7 @@ class App(customtkinter.CTk):
         # create scrollable frame for clients list
         ## to do: add clients to this frame
         self.scrollable_clients_frame = customtkinter.CTkScrollableFrame(self, label_text="Clients")
-        self.scrollable_clients_frame.grid(row=0, column=1, rowspan=4, padx=(10, 0), pady=(10, 0), sticky="nsew")
+        self.scrollable_clients_frame.grid(row = 0, column = 1, columnspan = 2, rowspan=3, padx=(10, 0), pady=(10, 0), sticky="nsew")
         self.scrollable_clients_frame.grid_columnconfigure((0), weight=1)
         self.scrollable_clients_names = get_all_users()
         self.scrollable_clients_labels = []
@@ -89,9 +89,14 @@ class App(customtkinter.CTk):
             view_button.grid(row=i, column=1, padx=10, pady=(0, 20))
             self.files_list = None
 
-            ping_button = customtkinter.CTkButton(master=self.scrollable_clients_frame, text="Ping", command=lambda username = username: self.ping_client(username))
+            ping_button = customtkinter.CTkButton(master=self.scrollable_clients_frame, text="Ping", command = lambda username = username: self.ping_client(username))
             ping_button.grid(row=i, column=2, padx=10, pady=(0, 20))
 
+        # create CLI
+        self.entry = customtkinter.CTkEntry(self, placeholder_text="Command...")
+        self.entry.grid(row=3, column=1, padx=(10, 10), pady=(20, 20), sticky="nsew")
+        self.main_button_1 = customtkinter.CTkButton(master=self, text="Enter", command = lambda:self.commandLine(command = self.entry.get()), fg_color="transparent", border_width=2, text_color=("gray10", "#DCE4EE"))
+        self.main_button_1.grid(row=3, column=2, padx=(10, 10), pady=(20, 20), sticky="nsew")
 
     def change_appearance_mode_event(self, new_appearance_mode: str):
         customtkinter.set_appearance_mode(new_appearance_mode)
@@ -103,6 +108,33 @@ class App(customtkinter.CTk):
     ## to do: stop server
     def sidebar_button_event(self):
         print("huhu")
+
+    def commandLine(self, command):
+        parts = command.split()
+
+        if len(parts) < 2:
+            message = "Lệnh không hợp lệ vui lòng nhập lại!"
+            tkinter.messagebox.showinfo(message)
+        
+        if parts[0] == "discover":
+            if len(parts) == 2:
+                username = parts[1]
+                self.view_client_files(username)
+            else:
+                message = "Lệnh không hợp lệ vui lòng nhập lại!"
+                tkinter.messagebox.showinfo("Thông Báo", message)
+
+        elif parts[0] == "ping":
+            if len(parts) == 2:
+                username = parts[1]
+                self.ping_client(username)
+            else:
+                message = "Lệnh không hợp lệ vui lòng nhập lại!"
+                tkinter.messagebox.showinfo(message)
+
+        else:
+            message = "Lệnh không hợp lệ vui lòng nhập lại!"
+            tkinter.messagebox.showinfo(message)
 
     def view_client_files(self,username):
         print(username)
@@ -121,6 +153,7 @@ class App(customtkinter.CTk):
         else:
             status_message = f"{username} không trực tuyến."
         tkinter.messagebox.showinfo("Trạng thái người dùng:", status_message)
+
 
 class CentralServer(Base):
     def __init__(self, serverhost='localhost', serverport=40000):
