@@ -79,6 +79,71 @@ def add_new_user(username, password):
         if cnt:
             cnt.close() 
 
+def add_onl_user(username):
+    try:
+        # Connect to DB
+        cnt = sqlite3.connect('user.db')
+        # insert new record
+        cnt.execute('''INSERT INTO online (NAME) VALUES (?);''',(username,))
+        cnt.commit()
+    # Handle errors
+    except sqlite3.Error as error:
+        print('Error occured - ', error)
+    # Close DB Connection irrespective of success or failure
+    finally:
+        if cnt:
+            cnt.close() 
+
+def remove_onl_user(username):
+    try:
+        # Connect to DB
+        cnt = sqlite3.connect('user.db')
+        # Remove record
+        cnt.execute('''DELETE FROM online WHERE NAME = ?;''',(username,))
+        cnt.commit()
+    # Handle errors
+    except sqlite3.Error as error:
+        print('Error occured - ', error)
+    # Close DB Connection irrespective of success or failure
+    finally:
+        if cnt:
+            cnt.close() 
+
+def get_onl_users():
+    try:
+        # Connect to DB 
+        cnt = sqlite3.connect('user.db')
+        # open a cursor
+        cursor = cnt.execute('''SELECT NAME FROM online;''')
+        user_list = []
+        for row in cursor:
+            user_list.append(row[0])
+
+        cursor.close() # close cursor
+    # Handle errors
+    except sqlite3.Error as error:
+        print('Error occured - ', error)
+    # Close DB Connection irrespective of success or failure
+    finally:
+        if cnt:
+            cnt.close() 
+        return user_list
+
+def delete_all_onl_users():
+    try:
+        # Connect to DB
+        cnt = sqlite3.connect('user.db')
+        # delete a record 
+        cnt.execute('''DELETE FROM online;''', )
+        cnt.commit()
+    # Handle errors
+    except sqlite3.Error as error:
+        print('Error occured - ', error)
+    # Close DB Connection irrespective of success or failure
+    finally:
+        if cnt:
+            cnt.close() 
+
 def delete_user(username):
     try:
         # Connect to DB
