@@ -431,7 +431,7 @@ class RepoPage(tk.Frame):
 # ------ end of GUI ------- #
 
 class NetworkPeer(Base):
-    def __init__(self, serverhost='localhost', serverport=30000, server_info=('192.168.1.154', 40000)):
+    def __init__(self, serverhost='localhost', serverport=30000, server_info=('192.168.1.155', 40000)):
         super(NetworkPeer, self).__init__(serverhost, serverport)
 
         # init host and port of central server
