@@ -274,7 +274,7 @@ class RepoPage(tk.Frame):
         self.temp_frame.grid_columnconfigure(0, weight=1)
         self.temp_frame.grid_columnconfigure(1, weight=1)
         # create delete button
-        self.delete_button = customtkinter.CTkButton(master=self.temp_frame, border_width=2, text="Delete from Repo")
+        self.delete_button = customtkinter.CTkButton(master=self.temp_frame, border_width=2, text="Delete from Repo", command=lambda: self.deleteSelectedFile())
         self.delete_button.grid(row=0, column=0, padx=(10, 10), pady=(10, 10), sticky="nsew")
         # create choose file button
         self.add_button = customtkinter.CTkButton(master=self.temp_frame, border_width=2, text="Add to Repo", command=lambda: self.chooseFile())
@@ -283,7 +283,7 @@ class RepoPage(tk.Frame):
         self.update_button = customtkinter.CTkButton(master=self.repo_frame, border_width=2, text="Update to Server", command=lambda: self.updateListFile())
         self.update_button.grid(row=3, column=0, padx=(10, 10), pady=(10, 10), sticky="nsew")
         # create reload repo button
-        self.update_button = customtkinter.CTkButton(master=self.repo_frame, border_width=2, text="Reload Repo")
+        self.update_button = customtkinter.CTkButton(master=self.repo_frame, border_width=2, text="Reload Repo", command=lambda: self.reloadRepo())
         self.update_button.grid(row=4, column=0, padx=(10, 10), pady=(10, 10), sticky="nsew")
 
         ### create frame for peer list
@@ -436,7 +436,7 @@ class RepoPage(tk.Frame):
 # ------ end of GUI ------- #
 
 class NetworkPeer(Base):
-    def __init__(self, serverhost='localhost', serverport=30000, server_info=('192.168.1.155', 40000)):
+    def __init__(self, serverhost='localhost', serverport=30000, server_info=('192.168.1.154', 40000)):
         super(NetworkPeer, self).__init__(serverhost, serverport)
 
         # init host and port of central server
