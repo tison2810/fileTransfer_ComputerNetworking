@@ -254,7 +254,7 @@ def display_noti(title, content):
 ## to do: add clients' files to this list
 class ClientFilesList(customtkinter.CTkToplevel):
     def __init__(self, parent, controller):
-        super().__init__(self, parent)
+        super().__init__(parent)
         self.geometry("550x290")
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(0, weight=1)
