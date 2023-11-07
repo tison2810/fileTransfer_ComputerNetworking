@@ -41,6 +41,7 @@ def get_user_password(username):
         return str(result[0])
 
 def get_user_file(username):
+    file_list = []
     try:
         # Connect to DB
         cnt = sqlite3.connect('user.db')

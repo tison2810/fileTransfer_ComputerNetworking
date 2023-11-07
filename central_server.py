@@ -1,4 +1,5 @@
 import socket
+from threading import Thread
 from Base import Base
 from persistence import *
 import customtkinter
@@ -82,9 +83,9 @@ class App(customtkinter.CTk):
             client_label.grid(row=i, column=0, padx=10, pady=(0, 20))
             self.scrollable_clients_labels.append(client_label)
 
-            view_button = customtkinter.CTkButton(master=self.scrollable_clients_frame, text="View Files", command=self.view_client_files)
+            view_button = customtkinter.CTkButton(master=self.scrollable_clients_frame, text="View Files", command=lambda:self.view_client_files(username))
             view_button.grid(row=i, column=1, padx=10, pady=(0, 20))
-            self.files_list = None
+            # self.files_list = None
 
             ping_button = customtkinter.CTkButton(master=self.scrollable_clients_frame, text="Ping", command=self.ping_client)
             ping_button.grid(row=i, column=2, padx=10, pady=(0, 20))
@@ -101,12 +102,14 @@ class App(customtkinter.CTk):
     def sidebar_button_event(self):
         print("huhu")
 
-    def view_client_files(self):
+    def view_client_files(self, username):
         print("button pressed")
-        if self.files_list is None or not self.files_list.winfo_exists():
+        self.files_list = get_user_file(username)
+        print(self.files_list)
+        if self.files_list is None or not all(widget.winfo_exists() for widget in self.files_list):
             self.files_list = ClientFilesList(self)  # create window if its None or destroyed
-        else:
-            self.files_list.focus()  # if window exists focus it
+        # else:
+        #     self.files_list.focus()  # if window exists focus it
 
     ## to do:
     def ping_client():
@@ -244,26 +247,23 @@ app = App()
 app.title('P2P File Sharing')
 app.geometry("1024x600")
 app.resizable(False, False)
-
 def handle_on_closing_event():
     if tkinter.messagebox.askokcancel("Thoát", "Bạn muốn thoát khỏi ứng dụng?"):
         app.destroy()
-
 app.protocol("WM_DELETE_WINDOW", handle_on_closing_event)
-app.mainloop()
+# app.mainloop()
 
-if __name__ == '__main__':
+# if __name__ == '__main__':
+#     server = CentralServer()
+#     server.input_recv()
+def run_server():
     server = CentralServer()
     server.input_recv()
 
-# app = App()
-# app.title('P2P File Sharing')
-# app.geometry("1024x600")
-# app.resizable(False, False)
+if __name__ == '__main__':
+    app = App()
 
-# def handle_on_closing_event():
-#     if tkinter.messagebox.askokcancel("Thoát", "Bạn muốn thoát khỏi ứng dụng?"):
-#         app.destroy()
+    server_thread = Thread(target=run_server)
+    server_thread.start()
 
-# app.protocol("WM_DELETE_WINDOW", handle_on_closing_event)
-# app.mainloop()
+    app.mainloop()

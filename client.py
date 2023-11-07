@@ -87,7 +87,7 @@ class tkinterApp(tk.Tk):
 
         # iterating through a tuple consisting
         # of the different page layouts
-        for F in (StartPage, RegisterPage, LoginPage, RepoPage2):
+        for F in (StartPage, RegisterPage, LoginPage, RepoPage):
             frame = F(container, self)
             # initializing frame of that object from
             # startpage, registerpage, loginpage, chatpage respectively with
@@ -798,7 +798,7 @@ class NetworkPeer(Base):
         display_noti('Login Noti', 'Login Successful.')
         app.geometry("1100x600")
         app.resizable(False, False)
-        app.show_frame(RepoPage2)
+        app.show_frame(RepoPage)
 
     def login_error(self, msgdata):
         """ Processing received message from server: Login failed on the server. """
