@@ -15,8 +15,9 @@ def display_noti(title, content):
 # popup window class for files 
 ## to do: add clients' files to this list
 class ClientFilesList(customtkinter.CTkToplevel):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, master, username, *args, **kwargs):
+        super().__init__(master, *args, **kwargs)
+        self.username = username
         self.geometry("550x290")
         self.grid_rowconfigure(0, weight=1)
         self.grid_columnconfigure(0, weight=1)
@@ -24,11 +25,12 @@ class ClientFilesList(customtkinter.CTkToplevel):
         self.scrollable_files_frame = customtkinter.CTkScrollableFrame(self, label_text="List of Files")
         self.scrollable_files_frame.grid(row=0, column=0, rowspan=4, padx=(10, 0), pady=(10, 0), sticky="nsew")
         
-        self.scrollable_clients_files = []
+        self.scrollable_clients_files = get_user_file(self.username)
+        self.scrollable_clients_files_labels = []
         for i, file_name in enumerate(self.scrollable_clients_files):
             client_label = customtkinter.CTkLabel(master=self.scrollable_files_frame, text=file_name)
             client_label.grid(row=i, column=0, padx=10, pady=(0, 20))
-            self.scrollable_clients_files.append(client_label)
+            self.scrollable_clients_files_labels.append(client_label)
 
 class App(customtkinter.CTk):
     def __init__(self, *args, **kwargs):
@@ -107,7 +109,7 @@ class App(customtkinter.CTk):
         self.files_list=get_user_file(username)
         print("button pressed")
         if self.files_list is None or not isinstance(self.files_list, ClientFilesList):
-            self.files_list = ClientFilesList(self)  # create window if its None or not a ClientFilesList
+            self.files_list = ClientFilesList(self, username)  # create window if its None or not a ClientFilesList
         else:
             self.files_list.focus()# if window exists focus it
 
