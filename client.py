@@ -264,9 +264,13 @@
         
 #         self.scrollable_clients_files = []
 #         for i in range(100):
-#             client_label = customtkinter.CTkLabel(master=self.scrollable_files_frame, text="File's Name")
-#             client_label.grid(row=i, column=0, padx=10, pady=(0, 20))
-#             self.scrollable_clients_files.append(client_label)
+#             file = customtkinter.CTkLabel(master=self.scrollable_repo_frame, text="File's Name")
+#             file.grid(row=i, column=0, padx=10, pady=(0, 20))
+#             self.scrollable_file_names.append(file)
+#         # create listbox
+#         repo_items = ["hehe", "huhu", "hihi"] ##### to be replaced with scrollable_peer_names after adding to list
+#         self.repo_list = customtkinter.CTkComboBox(self.repo_frame, values=repo_items, command=self.listbox_callback)
+#         self.repo_list.grid(row=1, column=0, padx=(10, 10), pady=(10, 10), sticky="nsew")
 
 # class RepoPage2(customtkinter.CTk):
 #     def __init__(self, parent, controller):
@@ -313,7 +317,6 @@
 #         ## to do: add file names to this frame
 #         self.scrollable_repo_frame = customtkinter.CTkScrollableFrame(self.repo_frame, label_text="Repository")
 #         self.scrollable_repo_frame.grid(row=0, column=0, padx=(10, 10), pady=(10, 10), sticky="nsew")
-#         self.scrollable_repo_frame.grid_columnconfigure(0, weight=1)
 #         self.scrollable_repo_frame.grid_rowconfigure(0, weight=1)
 #         self.scrollable_file_names = []
 #         ## to do: modify range to number of current files
@@ -323,7 +326,7 @@
 #             self.scrollable_file_names.append(file_label)
 #         # create temp frame
 #         self.temp_frame = customtkinter.CTkFrame(master=self.repo_frame, fg_color="transparent")
-#         self.temp_frame.grid(row=1, column=0, sticky="nsew")
+#         self.temp_frame.grid(row=2, column=0, sticky="nsew")
 #         self.temp_frame.grid_rowconfigure(0, weight=1)
 #         self.temp_frame.grid_columnconfigure(0, weight=1)
 #         self.temp_frame.grid_columnconfigure(1, weight=1)
@@ -335,32 +338,35 @@
 #         self.add_button.grid(row=0, column=1, padx=(10, 10), pady=(10, 10), sticky="nsew")
 #         # create update to server button
 #         self.update_button = customtkinter.CTkButton(master=self.repo_frame, border_width=2, text="Update to Server")
-#         self.update_button.grid(row=2, column=0, padx=(10, 10), pady=(10, 10), sticky="nsew")
+#         self.update_button.grid(row=3, column=0, padx=(10, 10), pady=(10, 10), sticky="nsew")
 #         # create reload repo button
 #         self.update_button = customtkinter.CTkButton(master=self.repo_frame, border_width=2, text="Reload Repo")
-#         self.update_button.grid(row=3, column=0, padx=(10, 10), pady=(10, 10), sticky="nsew")
+#         self.update_button.grid(row=4, column=0, padx=(10, 10), pady=(10, 10), sticky="nsew")
 
 
 #         # create frame for peer list
 #         self.peer_frame = customtkinter.CTkFrame(self, fg_color="transparent")
-#         self.peer_frame.grid(row=0, column=2, rowspan=3, sticky="nsew")
+#         self.peer_frame.grid(row=0, column=2, rowspan=4, sticky="nsew")
 #         self.peer_frame.grid_rowconfigure(0, weight=1)
 #         self.peer_frame.grid_columnconfigure(0, weight=1)
 #         # create scrollable peer list
 #         ## to do: add peer names to this frame
 #         self.scrollable_peer_frame = customtkinter.CTkScrollableFrame(self.peer_frame, label_text="Peer List")
 #         self.scrollable_peer_frame.grid(row=0, column=0, padx=(10, 10), pady=(10, 10), sticky="nsew")
-#         self.scrollable_peer_frame.grid_columnconfigure(0, weight=1)
 #         self.scrollable_peer_frame.grid_rowconfigure(0, weight=1)
 #         self.scrollable_peer_names = []
 #         ## to do: modify range to number of current peers
 #         for i in range(100):
-#             peer_label = customtkinter.CTkLabel(master=self.scrollable_peer_frame, text="Peer's Name")
-#             peer_label.grid(row=i, column=0, padx=10, pady=(0, 20))
-#             self.scrollable_peer_names.append(peer_label)
+#             peer = customtkinter.CTkLabel(master=self.scrollable_peer_frame, text="Peer's Name")
+#             peer.grid(row=i, column=0, padx=10, pady=(0, 20))
+#             self.scrollable_peer_names.append(peer)
+#         # create listbox
+#         list_items = ["hehe", "huhu", "hihi"] ##### to be replaced with scrollable_peer_names after adding to list
+#         self.list_box = customtkinter.CTkComboBox(self.peer_frame, values=list_items, command=self.listbox_callback)
+#         self.list_box.grid(row=1, column=0, padx=(10, 10), pady=(10, 10), sticky="nsew")
 #         # create search for file
 #         self.search_frame = customtkinter.CTkFrame(self.peer_frame, fg_color="transparent")
-#         self.search_frame.grid(row=1, column=0, padx=(10, 10), pady=(10, 10), sticky="nsew")
+#         self.search_frame.grid(row=2, column=0, padx=(10, 10), pady=(10, 10), sticky="nsew")
 #         self.search_frame.grid_rowconfigure(0, weight=1)
 #         self.search_frame.grid_columnconfigure(0, weight=1)
 #         self.search_entry = customtkinter.CTkEntry(master=self.search_frame, placeholder_text="Search...")
@@ -370,7 +376,7 @@
 #         # create send connect request button
 #         self.request_button = customtkinter.CTkButton(master=self.peer_frame, border_width=2,
 #                                                      command=lambda:self.chooseFile(), text="Send Connect Request")
-#         self.request_button.grid(row=2, column=0, padx=(10, 10), pady=(10, 10), sticky="nsew")
+#         self.request_button.grid(row=3, column=0, padx=(10, 10), pady=(10, 10), sticky="nsew")
 
 #         # create CLI
 #         self.entry = customtkinter.CTkEntry(self, placeholder_text="Command...")
@@ -574,19 +580,19 @@
 #             tkinter.messagebox.showinfo(
 #                 "File Transfer", '{} has been sent to {}!'.format(file_name, friend_name))
 
-#     def chooseFile(self):
-#         file_path = tkinter.filedialog.askopenfilename(initialdir="/",
-#                                                        title="Select a File",
-#                                                        filetypes=(("All files", "*.*"),))
-#         # file_name = os.path.basename(file_path)
-#         file_name = file_path
-#         msg_box = tkinter.messagebox.askquestion('File Explorer', 'Upload {} to local repository?'.format(file_name),
-#                                                  icon="question")
-#         if msg_box == 'yes':
-#             # popup = simpledialog.askstring("Input","Nhập tên file trên Localrepo",parent = self)
-#             self.Scrolledlistbox1.insert(0,file_name)
-#             tkinter.messagebox.showinfo(
-#                 "Local Repository", '{} has been added to localrepo!'.format(file_name))
+    # def chooseFile(self):
+    #     file_path = tkinter.filedialog.askopenfilename(initialdir="/",
+    #                                                    title="Select a File",
+    #                                                    filetypes=(("All files", "*.*"),))
+    #     # file_name = os.path.basename(file_path)
+    #     file_name = file_path
+    #     msg_box = tkinter.messagebox.askquestion('File Explorer', 'Upload {} to local repository?'.format(file_name),
+    #                                              icon="question")
+    #     if msg_box == 'yes':
+    #         # popup = simpledialog.askstring("Input","Nhập tên file trên Localrepo",parent = self)
+    #         self.Scrolledlistbox1.insert(0,file_name)
+    #         tkinter.messagebox.showinfo(
+    #             "Local Repository", '{} has been added to localrepo!'.format(file_name))
     
 #     def updateListFile(self):
 #         file_name = simpledialog.askstring("Input","Nhập tên file lưu trên Server",parent = self)
@@ -1054,6 +1060,7 @@ import random
 import sys
 import platform
 from Base import Base
+import persistence
  
 # GUI
 import tkinter as tk
@@ -1075,7 +1082,7 @@ BUFFER_SIZE = 2048
 OFFSET = 10000
 
 # --------------- #
-
+# --------------- #
 customtkinter.set_appearance_mode("System")
 customtkinter.set_default_color_theme("dark-blue")
 
@@ -1289,7 +1296,7 @@ class RepoPage(tk.Frame):
 
         #### create frame for repo
         self.repo_frame = customtkinter.CTkFrame(self, fg_color="transparent")
-        self.repo_frame.grid(row=0, column=1, rowspan=3, sticky="nsew")
+        self.repo_frame.grid(row=0, column=1, rowspan=4, sticky="nsew")
         self.repo_frame.grid_rowconfigure(0, weight=1)
         self.repo_frame.grid_columnconfigure(0, weight=1)
         # create scrollable frame for repo list
@@ -1298,15 +1305,21 @@ class RepoPage(tk.Frame):
         self.scrollable_repo_frame.grid(row=0, column=0, padx=(10, 10), pady=(10, 10), sticky="nsew")
         self.scrollable_repo_frame.grid_rowconfigure(0, weight=1)
         self.scrollable_file_names = []
+        self.fileListBox = tk.Listbox(self.scrollable_repo_frame, width=75, height=20)
+        self.fileListBox.grid(row=0, column=0, padx=10, pady=(10, 10))
         ## to do: modify range to number of current files
-        for i in range(100):
-            file = customtkinter.CTkCheckBox(master=self.scrollable_repo_frame, text="File's Name")
-            file.grid(row=i, column=0, padx=10, pady=(0, 20))
-            self.scrollable_file_names.append(file)
+        # for i in range(100):
+        #     file = customtkinter.CTkLabel(master=self.scrollable_repo_frame, text="File's Name")
+        #     file.grid(row=i, column=0, padx=10, pady=(0, 20))
+        #     self.scrollable_file_names.append(file)
+        # create listbox
+        # repo_items = ["hehe", "huhu", "hihi"] ##### to be replaced with scrollable_peer_names after adding to list
+        # self.repo_list = customtkinter.CTkComboBox(self.repo_frame, values=repo_items, command=self.listbox_callback)
+        # self.repo_list.grid(row=1, column=0, padx=(10, 10), pady=(10, 10), sticky="nsew")
         # create repo buttons
         # create temp frame
         self.temp_frame = customtkinter.CTkFrame(master=self.repo_frame, fg_color="transparent")
-        self.temp_frame.grid(row=1, column=0, sticky="nsew")
+        self.temp_frame.grid(row=2, column=0, sticky="nsew")
         self.temp_frame.grid_rowconfigure(0, weight=1)
         self.temp_frame.grid_columnconfigure(0, weight=1)
         self.temp_frame.grid_columnconfigure(1, weight=1)
@@ -1314,14 +1327,14 @@ class RepoPage(tk.Frame):
         self.delete_button = customtkinter.CTkButton(master=self.temp_frame, border_width=2, text="Delete from Repo")
         self.delete_button.grid(row=0, column=0, padx=(10, 10), pady=(10, 10), sticky="nsew")
         # create choose file button
-        self.add_button = customtkinter.CTkButton(master=self.temp_frame, border_width=2, text="Add to Repo")
+        self.add_button = customtkinter.CTkButton(master=self.temp_frame, border_width=2, text="Add to Repo", command=lambda: self.chooseFile())
         self.add_button.grid(row=0, column=1, padx=(10, 10), pady=(10, 10), sticky="nsew")
         # create update to server button
-        self.update_button = customtkinter.CTkButton(master=self.repo_frame, border_width=2, text="Update to Server")
-        self.update_button.grid(row=2, column=0, padx=(10, 10), pady=(10, 10), sticky="nsew")
+        self.update_button = customtkinter.CTkButton(master=self.repo_frame, border_width=2, text="Update to Server", command=lambda: self.updateListFile())
+        self.update_button.grid(row=3, column=0, padx=(10, 10), pady=(10, 10), sticky="nsew")
         # create reload repo button
         self.update_button = customtkinter.CTkButton(master=self.repo_frame, border_width=2, text="Reload Repo")
-        self.update_button.grid(row=3, column=0, padx=(10, 10), pady=(10, 10), sticky="nsew")
+        self.update_button.grid(row=4, column=0, padx=(10, 10), pady=(10, 10), sticky="nsew")
 
         ### create frame for peer list
         self.peer_frame = customtkinter.CTkFrame(self, fg_color="transparent")
@@ -1334,28 +1347,34 @@ class RepoPage(tk.Frame):
         self.scrollable_peer_frame.grid(row=0, column=0, padx=(10, 10), pady=(10, 10), sticky="nsew")
         self.scrollable_peer_frame.grid_rowconfigure(0, weight=1)
         self.scrollable_peer_names = []
-        ## to do: modify range to number of current peers
-        for i in range(100):
-            peer = customtkinter.CTkCheckBox(master=self.scrollable_peer_frame, text="Peer's Name")
-            peer.grid(row=i, column=0, padx=10, pady=(0, 20))
-            self.scrollable_peer_names.append(peer)
+        self.peerListBox = tk.Listbox(self.scrollable_peer_frame, width=75, height=20)
+        self.peerListBox.grid(row=0, column=0, padx=10, pady=(10, 10))
+        # to do: modify range to number of current peers
+        # for i in range(100):
+        #     peer = customtkinter.CTkLabel(master=self.scrollable_peer_frame, text="Peer's Name")
+        #     peer.grid(row=i, column=0, padx=10, pady=(0, 20))
+        #     self.scrollable_peer_names.append(peer)
+        # # create listbox
+        # list_items = ["hehe", "huhu", "hihi"] ##### to be replaced with scrollable_peer_names after adding to list
+        # self.list_box = customtkinter.CTkComboBox(self.peer_frame, values=list_items, command=self.listbox_callback)
+        # self.list_box.grid(row=1, column=0, padx=(10, 10), pady=(10, 10), sticky="nsew")
         # create search for file
         self.search_frame = customtkinter.CTkFrame(self.peer_frame, fg_color="transparent")
-        self.search_frame.grid(row=1, column=0, padx=(10, 10), pady=(10, 10), sticky="nsew")
+        self.search_frame.grid(row=2, column=0, padx=(10, 10), pady=(10, 10), sticky="nsew")
         self.search_frame.grid_rowconfigure(0, weight=1)
         self.search_frame.grid_columnconfigure(0, weight=1)
         self.search_entry = customtkinter.CTkEntry(master=self.search_frame, placeholder_text="Search...")
         self.search_entry.grid(row=0, column=0, padx=0, pady=0, sticky="nsew")
-        self.search_button = customtkinter.CTkButton(master=self.search_frame, text="Search", border_width=2)
+        self.search_button = customtkinter.CTkButton(master=self.search_frame, text="Search", border_width=2, command=lambda: self.get_users_share_file_from_entry())
         self.search_button.grid(row=0, column=1, padx=(10, 0), pady=0, sticky="nsew")
         # create send connect request button
         self.request_button = customtkinter.CTkButton(master=self.peer_frame, border_width=2,
                                                      command=lambda:self.chooseFile(), text="Send Connect Request")
-        self.request_button.grid(row=2, column=0, padx=(10, 10), pady=(10, 10), sticky="nsew")
+        self.request_button.grid(row=3, column=0, padx=(10, 10), pady=(10, 10), sticky="nsew")
 
         # create CLI
         self.entry = customtkinter.CTkEntry(self, placeholder_text="Command...")
-        self.entry.grid(row=3, column=1, columnspan=3, padx=(20, 20), pady=(20, 20), sticky="nsew")
+        self.entry.grid(row=4, column=1, columnspan=3, padx=(20, 20), pady=(20, 20), sticky="nsew")
         # self.main_button_1 = customtkinter.CTkButton(master=self, text="Enter", fg_color="transparent", border_width=2, text_color=("gray10", "#DCE4EE"))
         # self.main_button_1.grid(row=3, column=2, padx=(20, 20), pady=(20, 20), sticky="nsew")
 
@@ -1383,20 +1402,39 @@ class RepoPage(tk.Frame):
         msg_box = tkinter.messagebox.askquestion('File Explorer', 'Upload {} to local repository?'.format(file_name),
                                                  icon="question")
         if msg_box == 'yes':
-            popup = simpledialog.askstring("Input","Nhập tên file trên Localrepo",parent = self)
-            file_name = popup + "(" + file_name + ")"
-            self.Scrolledlistbox1.insert(0,file_name)
+            # popup = simpledialog.askstring("Input","Nhập tên file trên Localrepo",parent = self)
+            self.fileListBox.insert(0,file_name)
             tkinter.messagebox.showinfo(
                 "Local Repository", '{} has been added to localrepo!'.format(file_name))
-    
+    def fileRequest(self):
+        peer_name = self.peerListBox.get(tk.ANCHOR)
+        network_peer.send_file_request(peer_name, self.fileNameServer)
+
+    def updateListFile(self):
+        self.fileNameServer = simpledialog.askstring("Input","Nhập tên file lưu trên Server", parent = self)
+        file_path = self.fileListBox.get(tk.ANCHOR)
+        network_peer.updateToServer(self.fileNameServer, file_path)
+        self.fileListBox.delete(tk.ANCHOR)
+        self.fileListBox.insert(0,self.fileNameServer + "(" + file_path +")")
+
     def deleteSelectedFile(self):
-        file_name = self.Scrolledlistbox1.get(customtkinter.ANCHOR)
-        self.Scrolledlistbox1.delete(customtkinter.ANCHOR)
+        file_name = self.fileListBox.get(tk.ANCHOR)
+        self.fileListBox.delete(tk.ANCHOR)
         network_peer.deleteFileServer(file_name)
+
+    def get_users_share_file_from_entry(self):
+        file_name = self.search_entry.get()
+        network_peer.send_listpeer(file_name)
+
+    def insertToPeerList(self, info):
+        self.peer_list.insert(tk.END, info)
 
     ## to do: stop server
     def sidebar_button_event(self):
         print("huhu")
+
+    def listbox_callback():
+        print("done")
 
     def change_appearance_mode_event(self, new_appearance_mode: str):
         customtkinter.set_appearance_mode(new_appearance_mode)
@@ -1408,7 +1446,7 @@ class RepoPage(tk.Frame):
 # ------ end of GUI ------- #
 
 class NetworkPeer(Base):
-    def __init__(self, serverhost='localhost', serverport=30000, server_info=('192.168.1.155', 40000)):
+    def __init__(self, serverhost='localhost', serverport=30000, server_info=('192.168.1.154', 40000)):
         super(NetworkPeer, self).__init__(serverhost, serverport)
 
         # init host and port of central server
@@ -1428,6 +1466,9 @@ class NetworkPeer(Base):
         self.message_format = '{peername}: {message}'
         # file buffer
         self.file_buf = []
+
+        #global
+        fileCounting = 0
 
         # define handlers for received message of network peer
         handlers = {
@@ -1504,8 +1545,16 @@ class NetworkPeer(Base):
         }
         self.client_send(self.server_info,
                          msgtype='PEER_SEARCH', msgdata=peer_info)
-
+        
     def get_users_share_file(self, msgdata):
+        shareList = msgdata['online_user_list_have_file']
+        for data in shareList.items():
+            peer_host, peer_port = data
+            info = str(peer_port) + ":" + str(peer_host)
+            app.frames[RepoPage].peerListBox.insert(tk.END, info)
+    
+
+    def not_get_users_share_file(self, msgdata):
         """ Processing received message from server:
             Output username of all peers that have file which client is finding."""
         self.connectable_peer.clear()
@@ -1513,6 +1562,7 @@ class NetworkPeer(Base):
             self.connectable_peer[key] = tuple(value)
         if self.name in self.connectable_peer:
             self.connectable_peer.pop(self.name)
+
     ## ===========================================================##
 
     ## ==========implement protocol for file request==========##
@@ -1697,17 +1747,18 @@ class NetworkPeer(Base):
         self.client_send(self.server_info,
                          msgtype='DELETE_FILE', msgdata=peer_info)
         
-    def updateToServer(self,file_name):
+    def updateToServer(self, file_name, file_path):
         """ Upload repo to server. """
         peer_info = {
             'peername': self.name,
             'host': self.serverhost,
             'port': self.serverport,
-            'filename': file_name
+            'filename': file_name,
+            'filepath': file_path
         }
         self.client_send(self.server_info,
                          msgtype='FILE_REPO', msgdata=peer_info)
-
+    
 # ------ app run ---------- #
 if __name__ == "__main__":
     app = tkinterApp()
