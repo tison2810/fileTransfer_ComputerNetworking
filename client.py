@@ -1408,9 +1408,9 @@ class RepoPage(tk.Frame):
                 "Local Repository", '{} has been added to localrepo!'.format(file_name))
             
     def fileRequest(self):
-        peer_name = self.peerListBox.get(tk.ANCHOR)
+        peer_info = self.peerListBox.get(tk.ANCHOR)
         file_name = self.search_entry.get()
-        network_peer.send_request(peer_name, file_name)
+        network_peer.send_request(peer_info, file_name)
 
     def updateListFile(self):
         self.fileNameServer = simpledialog.askstring("Input","Nhập tên file lưu trên Server", parent = self)
@@ -1549,38 +1549,34 @@ class NetworkPeer(Base):
         shareList = msgdata['online_user_list_have_file']
         for peername, data in shareList.items():
             peer_host, peer_port = data
-            info = str(peername)
+            info = str(peer_host) + "," + str(peer_port)
             app.frames[RepoPage].peerListBox.insert(tk.END, info)
     
 
-    def not_get_users_share_file(self, msgdata):
-        """ Processing received message from server:
-            Output username of all peers that have file which client is finding."""
-        self.connectable_peer.clear()
-        for key, value in msgdata['online_user_list_have_file'].items():
-            self.connectable_peer[key] = tuple(value)
-        if self.name in self.connectable_peer:
-            self.connectable_peer.pop(self.name)
+    # def not_get_users_share_file(self, msgdata):
+    #     """ Processing received message from server:
+    #         Output username of all peers that have file which client is finding."""
+    #     self.connectable_peer.clear()
+    #     for key, value in msgdata['online_user_list_have_file'].items():
+    #         self.connectable_peer[key] = tuple(value)
+    #     if self.name in self.connectable_peer:
+    #         self.connectable_peer.pop(self.name)
 
     ## ===========================================================##
 
     ## ==========implement protocol for file request==========##
-    def send_request(self, peername, filename):
+    def send_request(self, peerinfo, filename):
         """ Send a chat request to an online user. """
-        try:
-            server_info = self.connectable_peer[peername]
-        except KeyError:
-            display_noti("File Request Error",
-                         'This peer ({}) is not available.'.format(peername))
-        else:
-            data = {
-                'peername': self.name,
-                'host': self.serverhost,
-                'port': self.serverport,
-                'filename': filename
-            }
-            self.client_send(
-                server_info, msgtype='FILE_REQUEST', msgdata=data)
+        peerhost, peerport = peerinfo.split(',')
+        peer = (peerhost, int(peerport))
+        data = {
+            'peername': self.name,
+            'host': self.serverhost,
+            'port': self.serverport,
+            'filename': filename
+        }
+        self.client_send(
+        peer, msgtype='FILE_REQUEST', msgdata=data)
 
     ##=====NEED MODIFY: Hàm này dùng để hiển thị có yêu cầu chia sẻ file để người dùng chọn đồng ý hoặc không====#
     def file_request(self, msgdata):
@@ -1588,7 +1584,7 @@ class NetworkPeer(Base):
         peername = msgdata['peername']
         host, port = msgdata['host'], msgdata['port']
         filename = msgdata['filename']
-        msg_box = tkinter.messagebox.askquestion('File Request', 'Do you want to accept {} - {}:{}?'.format(peername, host, port),
+        msg_box = tkinter.messagebox.askquestion('File Request', '{} - {}:{} request to take the file "{}"?'.format(peername, host, port, filename),
                                             icon="question")
         if msg_box == 'yes':
             # if request is agreed, connect to peer (add to friendlist)
@@ -1597,22 +1593,35 @@ class NetworkPeer(Base):
                 'host': self.serverhost,
                 'port': self.serverport
             }
-            self.client_send((host, port), msgtype='CHAT_ACCEPT', msgdata=data)
-            display_noti("Chat Request Accepted",
-                         "Update to get in touch with new friend!")
+            self.client_send((host, port), msgtype='FILE_ACCEPT', msgdata=data)
+            display_noti("File Request Accepted",
+                         "Get in touch!")
             self.friendlist[peername] = (host, port)
-        else:
-            self.client_send((host, port), msgtype='CHAT_REFUSE', msgdata={})
+            file_path = tkinter.filedialog.askopenfilename(initialdir="/",
+                                                       title="Select a File",
+                                                       filetypes=(("All files", "*.*"),))
+            file_name = os.path.basename(file_path)
+            msg_box = tkinter.messagebox.askquestion('File Explorer', 'Are you sure to send {} to {}?'.format(file_name, peername),
+                                                 icon="question")
+            if msg_box == 'yes':
+                sf_t = threading.Thread(
+                    target=network_peer.transfer_file, args=(peername, file_path))
+                sf_t.daemon = True
+                sf_t.start()
+                tkinter.messagebox.showinfo(
+                    "File Transfer", '{} has been sent to {}!'.format(file_name, peername))
+            else:
+                self.client_send((host, port), msgtype='FILE_REFUSE', msgdata={})
 
     #=======Hàm này dùng để chuyển file cho máy khách sau khi đã chọn đồng ý=======#
     def file_accept(self, msgdata):
-        """ Processing received accept chat request message from peer.
+        """ Processing received accept file request message from peer.
             Add the peer to collection of friends. """
         peername = msgdata['peername']
         host = msgdata['host']
         port = msgdata['port']
-        display_noti("Chat Request Result",
-                     'CHAT ACCEPTED: {} --- {}:{}. Update to get in touch with new friend!'.format(peername, host, port))
+        display_noti("File Request Result",
+                     'FILE ACCEPTED: {} --- {}:{}.'.format(peername, host, port))
         self.friendlist[peername] = (host, port)
 
     def file_refuse(self, msgdata):
