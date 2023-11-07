@@ -89,7 +89,7 @@ class App(customtkinter.CTk):
             view_button.grid(row=i, column=1, padx=10, pady=(0, 20))
             self.files_list = None
 
-            ping_button = customtkinter.CTkButton(master=self.scrollable_clients_frame, text="Ping", command=self.ping_client)
+            ping_button = customtkinter.CTkButton(master=self.scrollable_clients_frame, text="Ping", command=lambda username = username: self.ping_client(username))
             ping_button.grid(row=i, column=2, padx=10, pady=(0, 20))
 
 
@@ -114,8 +114,13 @@ class App(customtkinter.CTk):
             self.files_list.focus()# if window exists focus it
 
     ## to do:
-    def ping_client():
-        print("button pressed")
+    def ping_client(self, username):
+        onlineList = get_onl_users()
+        if username in onlineList:
+            status_message = f"{username} đang online."
+        else:
+            status_message = f"{username} không trực tuyến."
+        tkinter.messagebox.showinfo("Trạng thái người dùng:", status_message)
 
 class CentralServer(Base):
     def __init__(self, serverhost='localhost', serverport=40000):
@@ -130,6 +135,9 @@ class CentralServer(Base):
         # manage online user list have file which have been searched
         self.shareList = {}
 
+        # Delete data in table online
+        delete_all_onl_users()
+
         # define handlers for received message of central server
         handlers = {
             'PEER_REGISTER': self.peer_register,
@@ -141,7 +149,7 @@ class CentralServer(Base):
         }
         for msgtype, function in handlers.items():
             self.add_handler(msgtype, function)
-
+        
     ## ==========implement protocol for user registration - central server==========##
     def peer_register(self, msgdata):
         # received register info (msgdata): peername, host, port, password (hashed)
@@ -182,6 +190,7 @@ class CentralServer(Base):
                 
                 # add peer to online user list
                 self.onlineList[peer_name] = tuple((peer_host, peer_port))
+                add_onl_user(peer_name)
                 self.client_send((peer_host, peer_port),
                                  msgtype='LOGIN_SUCCESS', msgdata={})
 
@@ -226,6 +235,7 @@ class CentralServer(Base):
         # delete peer out of online user list 
         if peer_name in self.onlinelist:
             del self.onlinelist[peer_name]
+            remove_onl_user(peer_name)
             # noti
             print(peer_name, " has been removed from central server's online user list!")
     ## ===========================================================##

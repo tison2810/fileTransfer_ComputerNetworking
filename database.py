@@ -21,6 +21,11 @@ try:
                 NAME TEXT,
                 FILEPATH TEXT
                 );''')
+
+    # create table online
+    cnt.execute('''CREATE TABLE online (
+                NAME TEXT UNIQUE PRIMARY KEY
+                );''')
     cnt.commit()
 # Handle errors
 except sqlite3.Error as error:
