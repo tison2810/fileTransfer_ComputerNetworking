@@ -74,12 +74,13 @@ class App(customtkinter.CTk):
         self.scrollable_clients_frame = customtkinter.CTkScrollableFrame(self, label_text="Clients")
         self.scrollable_clients_frame.grid(row=0, column=1, rowspan=4, padx=(10, 0), pady=(10, 0), sticky="nsew")
         self.scrollable_clients_frame.grid_columnconfigure((0), weight=1)
-        self.scrollable_clients_names = []
+        self.scrollable_clients_names = get_all_users()
+        self.scrollable_clients_labels = []
         ## to do: modify range to number of current clients
-        for i in range(100):
-            client_label = customtkinter.CTkLabel(master=self.scrollable_clients_frame, text="Client's Name")
+        for i, username in enumerate(self.scrollable_clients_names):
+            client_label = customtkinter.CTkLabel(master=self.scrollable_clients_frame, text=username)
             client_label.grid(row=i, column=0, padx=10, pady=(0, 20))
-            self.scrollable_clients_names.append(client_label)
+            self.scrollable_clients_labels.append(client_label)
 
             view_button = customtkinter.CTkButton(master=self.scrollable_clients_frame, text="View Files", command=self.view_client_files)
             view_button.grid(row=i, column=1, padx=10, pady=(0, 20))
@@ -110,18 +111,6 @@ class App(customtkinter.CTk):
     ## to do:
     def ping_client():
         print("button pressed")
-
-app = App()
-app.title('P2P File Sharing')
-app.geometry("1024x600")
-app.resizable(False, False)
-
-def handle_on_closing_event():
-    if tkinter.messagebox.askokcancel("Thoát", "Bạn muốn thoát khỏi ứng dụng?"):
-        app.destroy()
-
-app.protocol("WM_DELETE_WINDOW", handle_on_closing_event)
-app.mainloop()
 
 class CentralServer(Base):
     def __init__(self, serverhost='localhost', serverport=40000):
@@ -250,6 +239,31 @@ class CentralServer(Base):
         peer_name = msgdata['peername']
         file_name = msgdata['filename']
         delete_file(peer_name, file_name)
+
+app = App()
+app.title('P2P File Sharing')
+app.geometry("1024x600")
+app.resizable(False, False)
+
+def handle_on_closing_event():
+    if tkinter.messagebox.askokcancel("Thoát", "Bạn muốn thoát khỏi ứng dụng?"):
+        app.destroy()
+
+app.protocol("WM_DELETE_WINDOW", handle_on_closing_event)
+app.mainloop()
+
 if __name__ == '__main__':
     server = CentralServer()
     server.input_recv()
+
+# app = App()
+# app.title('P2P File Sharing')
+# app.geometry("1024x600")
+# app.resizable(False, False)
+
+# def handle_on_closing_event():
+#     if tkinter.messagebox.askokcancel("Thoát", "Bạn muốn thoát khỏi ứng dụng?"):
+#         app.destroy()
+
+# app.protocol("WM_DELETE_WINDOW", handle_on_closing_event)
+# app.mainloop()
