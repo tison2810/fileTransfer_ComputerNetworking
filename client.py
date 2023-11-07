@@ -348,7 +348,9 @@ class RepoPage(tk.Frame):
                 file_name = parts[1]
                 #Implement something to search file and doawnload it#
                 #To do#
-                self.chooseFilefromPath(file_name)
+                network_peer.send_listpeer(file_name)
+                peer_info = self.peerListBox.get(0)
+                network_peer.send_request(peer_info, file_name)
             else:
                 message = "Lệnh không hợp lệ vui lòng nhập lại!"
                 tkinter.messagebox.showinfo(message)
@@ -559,7 +561,7 @@ class NetworkPeer(Base):
 
     ## ==========implement protocol for file request==========##
     def send_request(self, peerinfo, filename):
-        """ Send a chat request to an online user. """
+        """ Send a file request to an online user. """
         peerhost, peerport = peerinfo.split(',')
         peer = (peerhost, int(peerport))
         data = {
