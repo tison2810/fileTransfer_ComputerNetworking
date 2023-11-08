@@ -229,7 +229,7 @@ class RepoPage(tk.Frame):
         # sidebar buttons
         self.sidebar_button = customtkinter.CTkButton(self.sidebar_frame, text="Quit", command=self.sidebar_button_event)
         self.sidebar_button.grid(row=1, column=0, padx=20, pady=10)
-        self.logout_button = customtkinter.CTkButton(self.sidebar_frame, text="Log Out", command=self.sidebar_button_event)
+        self.logout_button = customtkinter.CTkButton(self.sidebar_frame, text="Log Out", command=lambda: self.logout_user())
         self.logout_button.grid(row=2, column=0, padx=20, pady=10)
         # change appearance mode
         self.appearance_mode_label = customtkinter.CTkLabel(self.sidebar_frame, text="Appearance Mode:", anchor="w")
@@ -329,6 +329,10 @@ class RepoPage(tk.Frame):
         self.main_button_1 = customtkinter.CTkButton(master=self, text="Enter", command=lambda:self.commandLine(command = self.entry.get()),fg_color="transparent", border_width=2, text_color=("gray10", "#DCE4EE"))
         self.main_button_1.grid(row=4, column=3, padx=(10, 10), pady=(20, 20), sticky="nsew")
 
+
+    def logout_user(self):
+        network_peer.send_logout_request()
+        app.show_frame(StartPage)
 
     def commandLine(self, command):
         parts = command.split()

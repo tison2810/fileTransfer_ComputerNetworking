@@ -267,9 +267,10 @@ class CentralServer(Base):
     ## ================implement protocol for log out & exit=============##
     def peer_logout(self, msgdata):
         peer_name = msgdata['peername']
+        onlineList = get_onl_users()
         # delete peer out of online user list 
-        if peer_name in self.onlinelist:
-            del self.onlinelist[peer_name]
+        if peer_name in onlineList:
+            del onlineList[peer_name]
             remove_onl_user(peer_name)
             # noti
             print(peer_name, " has been removed from central server's online user list!")
