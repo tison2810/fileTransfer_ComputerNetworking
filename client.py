@@ -9,6 +9,7 @@ import time
 import random
 import sys
 import platform
+import shutil
 from Base import Base
 import persistence
  
@@ -147,7 +148,7 @@ class RegisterPage(tk.Frame):
 
         self.password = customtkinter.CTkLabel(self.frame, text="Password", font=("Roboto", 14))
         self.password.pack(pady=(0),padx=10)
-        self.password_entry = customtkinter.CTkEntry(self.frame, placeholder_text="Enter password", font=("Roboto", 12))
+        self.password_entry = customtkinter.CTkEntry(self.frame, placeholder_text="Enter password", font=("Roboto", 12), show = "*")
         self.password_entry.pack(pady=(0, 10),padx=10)
 
         # Submit
@@ -186,7 +187,7 @@ class LoginPage(tk.Frame):
 
         self.password = customtkinter.CTkLabel(self.frame, text="Password", font=("Roboto", 14))
         self.password.pack(pady=(0),padx=10)
-        self.password_entry = customtkinter.CTkEntry(self.frame, placeholder_text="Enter password", font=("Roboto", 12))
+        self.password_entry = customtkinter.CTkEntry(self.frame, placeholder_text="Enter password", font=("Roboto", 12), show = '*')
         self.password_entry.pack(pady=(0, 10),padx=10)
 
         customtkinter.CTkButton(self.frame, text='Đăng nhập', command=lambda:
@@ -339,6 +340,7 @@ class RepoPage(tk.Frame):
                 #To do#
                 network_peer.updateToServer(file_name, file_path)
                 self.fileListBox.insert(0,file_name + "(" + file_path +")")
+                self.sendtoServerPath(file_path)
                 
             else:
                 message = "Lệnh không hợp lệ vui lòng nhập lại!"
@@ -358,20 +360,34 @@ class RepoPage(tk.Frame):
             message = "Lệnh không hợp lệ vui lòng nhập lại!"
             tkinter.messagebox.showinfo(message)
 
-    def sendFile(self, friend_name):
+    def sendFile(self, peername):
         file_path = tkinter.filedialog.askopenfilename(initialdir="/",
                                                        title="Select a File",
                                                        filetypes=(("All files", "*.*"),))
         file_name = os.path.basename(file_path)
-        msg_box = tkinter.messagebox.askquestion('File Explorer', 'Are you sure to send {} to {}?'.format(file_name, friend_name),
+        msg_box = tkinter.messagebox.askquestion('File Explorer', 'Are you sure to send {} to {}?'.format(file_name, peername),
                                                  icon="question")
         if msg_box == 'yes':
             sf_t = threading.Thread(
-                target=network_peer.transfer_file, args=(self.friend_name, file_path))
+                target=network_peer.transfer_file, args=(peername, file_path))
             sf_t.daemon = True
             sf_t.start()
             tkinter.messagebox.showinfo(
-                "File Transfer", '{} has been sent to {}!'.format(file_name, friend_name))
+                "File Transfer", '{} has been sent to {}!'.format(file_name, peername))
+            
+    def sendtoLocalPath(self, file_path):
+        # create a folder named "repo" in this folder
+        if not os.path.exists("localRepo"):
+            os.makedirs("localRepo")
+        destination = os.path.join(os.getcwd(), "localRepo")
+        shutil.copy(file_path, destination)
+
+    def sendtoServerPath(self, file_path):
+        # create a folder named "repo" in this folder
+        if not os.path.exists("serverRepo"):
+            os.makedirs("serverRepo")
+        destination = os.path.join(os.getcwd(), "serverRepo")
+        shutil.move(file_path, destination)    
 
     def chooseFile(self):
         file_path = tkinter.filedialog.askopenfilename(initialdir="/",
@@ -386,6 +402,7 @@ class RepoPage(tk.Frame):
             self.fileListBox.insert(0,file_name)
             tkinter.messagebox.showinfo(
                 "Local Repository", '{} has been added to localrepo!'.format(file_name))
+            self.sendtoLocalPath(file_name)
             
     def chooseFilefromPath(self, file_path):
             self.fileListBox.insert(0,file_path)
@@ -400,9 +417,17 @@ class RepoPage(tk.Frame):
     def updateListFile(self):
         self.fileNameServer = simpledialog.askstring("Input","Nhập tên file lưu trên Server", parent = self)
         file_path = self.fileListBox.get(tk.ANCHOR)
+        self.sendtoServerPath(file_path)
         network_peer.updateToServer(self.fileNameServer, file_path)
         self.fileListBox.delete(tk.ANCHOR)
         self.fileListBox.insert(0,self.fileNameServer + "(" + file_path +")")
+
+    def updateListFilefromFetch(self, file_name, file_name_server):
+        file_path = os.path.join(os.getcwd(), file_name)
+        self.sendtoServerPath(file_path)
+        network_peer.updateToServer(file_name_server, file_path)
+        self.fileListBox.delete(tk.ANCHOR)
+        self.fileListBox.insert(0,file_name_server + "(" + file_name +")")
 
     def deleteSelectedFile(self):
         file_name = self.fileListBox.get(tk.ANCHOR)
@@ -411,6 +436,7 @@ class RepoPage(tk.Frame):
 
     def get_users_share_file_from_entry(self):
         file_name = self.search_entry.get()
+        self.peerListBox.delete(0, tk.END)
         network_peer.send_listpeer(file_name)
 
     def insertToPeerList(self, info):
@@ -419,6 +445,10 @@ class RepoPage(tk.Frame):
     def reloadRepo(self):
         for file in self.fileListBox.get(0, tk.END):
             self.fileListBox.delete(0, tk.END)
+        path = os.path.join(os.getcwd(), "localRepo")
+        for filename in os.listdir(path):
+            file_path = os.path.join(path, filename)
+            self.fileListBox.insert(tk.END, file_path)
         network_peer.reloadRepoList()
 
     ## to do: stop server
@@ -540,7 +570,7 @@ class NetworkPeer(Base):
         for peername, data in shareList.items():
             peer_host, peer_port = data
             info = str(peer_host) + "," + str(peer_port)
-            app.frames[RepoPage].peerListBox.insert(tk.END, info)
+            app.frames[RepoPage].peerListBox.insert(0, info)
 
     def reloadRepoList(self):
         fileList = []
@@ -600,7 +630,7 @@ class NetworkPeer(Base):
                                                  icon="question")
             if msg_box == 'yes':
                 sf_t = threading.Thread(
-                    target=network_peer.transfer_file, args=(peername, file_path))
+                    target=network_peer.transfer_file, args=(peername, file_path, filename))
                 sf_t.daemon = True
                 sf_t.start()
                 tkinter.messagebox.showinfo(
@@ -651,8 +681,8 @@ class NetworkPeer(Base):
     ## ===========================================================##
 
     ## ==========implement protocol for file tranfering==========##
-    def transfer_file(self, peer, file_path):
-        """ Transfer a file to friend. """
+    def transfer_file(self, peer, file_path, file_name_server):
+        """ Transfer a file. """
         try:
             peer_info = self.friendlist[peer]
         except KeyError:
@@ -667,6 +697,7 @@ class NetworkPeer(Base):
                 fileInfo = {
                     'filename': filename,
                     'friendname': peer,
+                    'filenameserver': file_name_server,
                 }
 
                 fileInfo = json.dumps(fileInfo).encode(FORMAT)
@@ -708,7 +739,7 @@ class NetworkPeer(Base):
             conn.send("Filename received.".encode(FORMAT))
             print(recv_file_info)
 
-            file_name = str(random.randint(1, 100000000))+ "_" + recv_file_info['filename']
+            file_name = recv_file_info['filename']
             friend_name = recv_file_info['friendname']
 
             with open(file_name, "wb") as f:
@@ -720,7 +751,8 @@ class NetworkPeer(Base):
                         break
                     # write to the file the bytes we just received
                     f.write(bytes_read)
-
+            
+            app.frames[RepoPage].updateListFilefromFetch(file_name, recv_file_info['filenameserver'])
             conn.shutdown(socket.SHUT_WR)
             conn.close()
 
