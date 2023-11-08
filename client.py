@@ -25,7 +25,7 @@ import customtkinter
 
 # aid
 from hashfunction import MD5_hash
-import asset
+# import asset
 
 # ----CONSTANT----#
 FORMAT = "utf-8"
