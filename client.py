@@ -358,20 +358,20 @@ class RepoPage(tk.Frame):
             message = "Lệnh không hợp lệ vui lòng nhập lại!"
             tkinter.messagebox.showinfo(message)
 
-    def sendFile(self, friend_name):
+    def sendFile(self, peername):
         file_path = tkinter.filedialog.askopenfilename(initialdir="/",
                                                        title="Select a File",
                                                        filetypes=(("All files", "*.*"),))
         file_name = os.path.basename(file_path)
-        msg_box = tkinter.messagebox.askquestion('File Explorer', 'Are you sure to send {} to {}?'.format(file_name, friend_name),
+        msg_box = tkinter.messagebox.askquestion('File Explorer', 'Are you sure to send {} to {}?'.format(file_name, peername),
                                                  icon="question")
         if msg_box == 'yes':
             sf_t = threading.Thread(
-                target=network_peer.transfer_file, args=(self.friend_name, file_path))
+                target=network_peer.transfer_file, args=(peername, file_path))
             sf_t.daemon = True
             sf_t.start()
             tkinter.messagebox.showinfo(
-                "File Transfer", '{} has been sent to {}!'.format(file_name, friend_name))
+                "File Transfer", '{} has been sent to {}!'.format(file_name, peername))
 
     def chooseFile(self):
         file_path = tkinter.filedialog.askopenfilename(initialdir="/",
