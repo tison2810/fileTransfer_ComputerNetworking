@@ -270,7 +270,7 @@ class CentralServer(Base):
         onlineList = get_onl_users()
         # delete peer out of online user list 
         if peer_name in onlineList:
-            del onlineList[peer_name]
+            onlineList.remove(peer_name)
             remove_onl_user(peer_name)
             # noti
             print(peer_name, " has been removed from central server's online user list!")

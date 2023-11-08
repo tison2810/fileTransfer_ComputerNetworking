@@ -223,12 +223,12 @@ class RepoPage(tk.Frame):
         self.logo_label = customtkinter.CTkLabel(self.sidebar_frame, text="P2P Server", font=customtkinter.CTkFont(size=20, weight="bold"))
         self.logo_label.grid(row=0, column=0, padx=20, pady=(20, 10))
 
-        self.sidebar_button = customtkinter.CTkButton(self.sidebar_frame, text="Quit", command=self.sidebar_button_event)
+        self.sidebar_button = customtkinter.CTkButton(self.sidebar_frame, text="Quit", command=lambda: self.quit_user())
         self.sidebar_button.grid(row=1, column=0, padx=20, pady=10)
 
         # sidebar buttons
-        self.sidebar_button = customtkinter.CTkButton(self.sidebar_frame, text="Quit", command=self.sidebar_button_event)
-        self.sidebar_button.grid(row=1, column=0, padx=20, pady=10)
+        # self.sidebar_button = customtkinter.CTkButton(self.sidebar_frame, text="Quit", command=lambda: self.quit_user())
+        # self.sidebar_button.grid(row=1, column=0, padx=20, pady=10)
         self.logout_button = customtkinter.CTkButton(self.sidebar_frame, text="Log Out", command=lambda: self.logout_user())
         self.logout_button.grid(row=2, column=0, padx=20, pady=10)
         # change appearance mode
@@ -334,6 +334,10 @@ class RepoPage(tk.Frame):
         network_peer.send_logout_request()
         app.show_frame(StartPage)
 
+    def quit_user(self):
+        network_peer.send_logout_request()
+        app.destroy()
+    
     def commandLine(self, command):
         parts = command.split()
 
