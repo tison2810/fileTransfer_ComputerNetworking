@@ -148,7 +148,7 @@ class RegisterPage(tk.Frame):
 
         self.password = customtkinter.CTkLabel(self.frame, text="Password", font=("Roboto", 14))
         self.password.pack(pady=(0),padx=10)
-        self.password_entry = customtkinter.CTkEntry(self.frame, placeholder_text="Enter password", font=("Roboto", 12), show = "*")
+        self.password_entry = customtkinter.CTkEntry(self.frame, placeholder_text="Enter password", font=("Roboto", 12), show = '*')
         self.password_entry.pack(pady=(0, 10),padx=10)
 
         # Submit
