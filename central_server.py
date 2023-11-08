@@ -259,10 +259,6 @@ class CentralServer(Base):
             'online_user_list_have_file': self.shareList
         }
 
-        for peer in self.shareList.items():
-            print(peer_host = peer['host'])
-            print(peer_port = peer['port'])
-
         self.client_send((peer_host, peer_port),
                          msgtype='LIST_USER_SHARE_FILE', msgdata=data)
         print(peer_name, " has been sent latest online user list have file!")

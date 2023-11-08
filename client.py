@@ -469,7 +469,7 @@ class RepoPage(tk.Frame):
 # ------ end of GUI ------- #
 
 class NetworkPeer(Base):
-    def __init__(self, serverhost='localhost', serverport=30000, server_info=('192.168.1.155', 40000)):
+    def __init__(self, serverhost='localhost', serverport=30000, server_info=('192.168.1.154', 40000)):
         super(NetworkPeer, self).__init__(serverhost, serverport)
 
         # init host and port of central server
@@ -623,7 +623,8 @@ class NetworkPeer(Base):
             display_noti("File Request Accepted",
                          "Send The File!")
             self.friendlist[peername] = (host, port)
-            file_path = tkinter.filedialog.askopenfilename(initialdir="/",
+            destination = os.path.join(os.getcwd(), "serverRepo")
+            file_path = tkinter.filedialog.askopenfilename(initialdir=destination,
                                                        title="Select a File",
                                                        filetypes=(("All files", "*.*"),))
             file_name = os.path.basename(file_path)
