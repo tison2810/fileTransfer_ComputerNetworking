@@ -147,7 +147,7 @@ class RegisterPage(tk.Frame):
 
         self.password = customtkinter.CTkLabel(self.frame, text="Password", font=("Roboto", 14))
         self.password.pack(pady=(0),padx=10)
-        self.password_entry = customtkinter.CTkEntry(self.frame, placeholder_text="Enter password", font=("Roboto", 12))
+        self.password_entry = customtkinter.CTkEntry(self.frame, placeholder_text="Enter password", font=("Roboto", 12), show = "*")
         self.password_entry.pack(pady=(0, 10),padx=10)
 
         # Submit
@@ -186,7 +186,7 @@ class LoginPage(tk.Frame):
 
         self.password = customtkinter.CTkLabel(self.frame, text="Password", font=("Roboto", 14))
         self.password.pack(pady=(0),padx=10)
-        self.password_entry = customtkinter.CTkEntry(self.frame, placeholder_text="Enter password", font=("Roboto", 12))
+        self.password_entry = customtkinter.CTkEntry(self.frame, placeholder_text="Enter password", font=("Roboto", 12), show = "*")
         self.password_entry.pack(pady=(0, 10),padx=10)
 
         customtkinter.CTkButton(self.frame, text='Đăng nhập', command=lambda:
@@ -274,7 +274,7 @@ class RepoPage(tk.Frame):
         self.temp_frame.grid_columnconfigure(0, weight=1)
         self.temp_frame.grid_columnconfigure(1, weight=1)
         # create delete button
-        self.delete_button = customtkinter.CTkButton(master=self.temp_frame, border_width=2, text="Delete from Repo", command=lambda: self.deleteSelectedFile())
+        self.delete_button = customtkinter.CTkButton(master=self.temp_frame, border_width=2, text="Delete from Repo")
         self.delete_button.grid(row=0, column=0, padx=(10, 10), pady=(10, 10), sticky="nsew")
         # create choose file button
         self.add_button = customtkinter.CTkButton(master=self.temp_frame, border_width=2, text="Add to Repo", command=lambda: self.chooseFile())
@@ -283,7 +283,7 @@ class RepoPage(tk.Frame):
         self.update_button = customtkinter.CTkButton(master=self.repo_frame, border_width=2, text="Update to Server", command=lambda: self.updateListFile())
         self.update_button.grid(row=3, column=0, padx=(10, 10), pady=(10, 10), sticky="nsew")
         # create reload repo button
-        self.update_button = customtkinter.CTkButton(master=self.repo_frame, border_width=2, text="Reload Repo", command=lambda: self.reloadRepo())
+        self.update_button = customtkinter.CTkButton(master=self.repo_frame, border_width=2, text="Reload Repo", command = lambda: self.reloadRepo())
         self.update_button.grid(row=4, column=0, padx=(10, 10), pady=(10, 10), sticky="nsew")
 
         ### create frame for peer list
@@ -328,6 +328,7 @@ class RepoPage(tk.Frame):
         self.main_button_1 = customtkinter.CTkButton(master=self, text="Enter", command=lambda:self.commandLine(command = self.entry.get()),fg_color="transparent", border_width=2, text_color=("gray10", "#DCE4EE"))
         self.main_button_1.grid(row=4, column=3, padx=(10, 10), pady=(20, 20), sticky="nsew")
 
+
     def commandLine(self, command):
         parts = command.split()
 
@@ -348,9 +349,7 @@ class RepoPage(tk.Frame):
                 file_name = parts[1]
                 #Implement something to search file and doawnload it#
                 #To do#
-                network_peer.send_listpeer(file_name)
-                peer_info = self.peerListBox.get(0)
-                network_peer.send_request(peer_info, file_name)
+                self.chooseFilefromPath(file_name)
             else:
                 message = "Lệnh không hợp lệ vui lòng nhập lại!"
                 tkinter.messagebox.showinfo(message)
@@ -416,11 +415,6 @@ class RepoPage(tk.Frame):
     def insertToPeerList(self, info):
         self.peer_list.insert(tk.END, info)
 
-    def reloadRepo(self):
-        for file in self.fileListBox.get(0, tk.END):
-            self.fileListBox.delete(0, tk.END)
-        network_peer.reloadRepoList()
-
     ## to do: stop server
     def sidebar_button_event(self):
         print("huhu")
@@ -438,7 +432,7 @@ class RepoPage(tk.Frame):
 # ------ end of GUI ------- #
 
 class NetworkPeer(Base):
-    def __init__(self, serverhost='localhost', serverport=30000, server_info=('192.168.1.154', 40000)):
+    def __init__(self, serverhost='localhost', serverport=30000, server_info=('192.168.1.155', 40000)):
         super(NetworkPeer, self).__init__(serverhost, serverport)
 
         # init host and port of central server
@@ -541,12 +535,7 @@ class NetworkPeer(Base):
             peer_host, peer_port = data
             info = str(peer_host) + "," + str(peer_port)
             app.frames[RepoPage].peerListBox.insert(tk.END, info)
-
-    def reloadRepoList(self):
-        fileList = []
-        fileList = persistence.get_user_file(self.name)
-        for file in fileList:
-            app.frames[RepoPage].fileListBox.insert(0,file)
+    
 
     # def not_get_users_share_file(self, msgdata):
     #     """ Processing received message from server:
@@ -561,7 +550,7 @@ class NetworkPeer(Base):
 
     ## ==========implement protocol for file request==========##
     def send_request(self, peerinfo, filename):
-        """ Send a file request to an online user. """
+        """ Send a chat request to an online user. """
         peerhost, peerport = peerinfo.split(',')
         peer = (peerhost, int(peerport))
         data = {
