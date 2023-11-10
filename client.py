@@ -395,9 +395,11 @@ class RepoPage(tk.Frame):
         # create a folder named "repo" in this folder
         if not os.path.exists("serverRepo"):
             os.makedirs("serverRepo")
-        destination = os.path.join(os.getcwd(), "serverRepo")
-        shutil.move(file_path, destination)    
-
+        file_name = os.path.basename(file_path)
+        source = os.path.join(os.getcwd(), "localRepo", file_name)
+        destination = os.path.join(os.getcwd(), "serverRepo")  
+        shutil.move(source, destination)  
+        
     def chooseFile(self):
         file_path = tkinter.filedialog.askopenfilename(initialdir="/",
                                                        title="Select a File",
