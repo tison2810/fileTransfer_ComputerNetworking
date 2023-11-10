@@ -399,7 +399,7 @@ class RepoPage(tk.Frame):
         source = os.path.join(os.getcwd(), "localRepo", file_name)
         destination = os.path.join(os.getcwd(), "serverRepo")  
         shutil.move(source, destination)  
-        
+
     def chooseFile(self):
         file_path = tkinter.filedialog.askopenfilename(initialdir="/",
                                                        title="Select a File",
@@ -479,7 +479,7 @@ class RepoPage(tk.Frame):
 # ------ end of GUI ------- #
 
 class NetworkPeer(Base):
-    def __init__(self, serverhost='localhost', serverport=30000, server_info=('192.168.1.154', 40000)):
+    def __init__(self, serverhost='localhost', serverport=30000, server_info=('172.20.10.2', 40000)):
         super(NetworkPeer, self).__init__(serverhost, serverport)
 
         # init host and port of central server
