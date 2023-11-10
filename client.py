@@ -435,7 +435,7 @@ class RepoPage(tk.Frame):
 
     def updateListFilefromFetch(self, file_name, file_name_server):
         file_path = os.path.join(os.getcwd(), file_name)
-        self.sendtoServerPath(file_path)
+        # self.sendtoServerPath(file_path)
         network_peer.updateToServer(file_name_server, file_path)
         self.fileListBox.delete(tk.ANCHOR)
         self.fileListBox.insert(0,file_name_server + "(" + file_name +")")
